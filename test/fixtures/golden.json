@@ -1,0 +1,699 @@
+{
+ "01-routes-0.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 2 routes, 8 endpoints, 7 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| bean | 2 |\n| direct | 1 |\n| ftp | 1 |\n| https | 1 |\n| kafka | 1 |\n| seda | 1 |\n| sql | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 7 | \\(route 1\\) | from | seda | seda:jobs |\n| 8 | \\(route 1\\) | wireTap | https | https\\:\\/\\/partner.example.test/api |\n| 9 | \\(route 1\\) | to | sql | sql:select 1 |\n| 10 | \\(route 1\\) | toD | bean | bean:orderService |\n| 11 | \\(route 1\\) | toD | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 13 | \\(route 1\\) | to | direct | direct:risky |\n| 18 | dup | from | kafka | kafka:events?brokers=localhost:9092 |\n| 19 | dup | wireTap | bean | bean:orderService |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n2 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 6 | \\(route 1\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 13 | \\(route 1\\) | to direct:risky: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines 1 global error handler (onException, errorHandler or deadLetterChannel outside the routes); they apply to every route.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 6 | \\(route 1\\) | yes (2) |\n| 17 | dup | no |\n\n1 route with no error handling of their own use the global error handler."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n2 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 11 | \\(route 1\\) | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 11 | \\(route 1\\) | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "02-routes-1.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 1 route, 2 endpoints, 2 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| kafka | 1 |\n| seda | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 4 | \\(route 1\\) | from | kafka | kafka:events?brokers=localhost:9092 |\n| 5 | \\(route 1\\) | toD | seda | seda:jobs |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n2 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 3 | \\(route 1\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 5 | \\(route 1\\) | toD seda:jobs: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 3 | \\(route 1\\) | no |\n\n1 route without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\nNo findings."
+  }
+ },
+ "03-routes-2.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 5 routes, 12 endpoints, 7 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 4 |\n| file | 3 |\n| ftp | 1 |\n| http | 1 |\n| https | 1 |\n| kafka | 1 |\n| seda | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 4 | \\(route 1\\) | from | file | file:inbox?move=.done |\n| 5 | \\(route 1\\) | wireTap | direct | direct:missing |\n| 8 | route-1 | from | direct | direct:start |\n| 9 | route-1 | toD | https | https\\:\\/\\/partner.example.test/api |\n| 12 | \\(route 3\\) | from | direct | direct:start |\n| 13 | \\(route 3\\) | to | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 16 | route-3 | from | file | file:inbox?move=.done |\n| 17 | route-3 | toD | kafka | kafka:out?brokers=localhost:9092\\&saslJaasConfig=RAW\\(\\{\\{kafka.jaas\\}\\}\\) |\n| 18 | route-3 | enrich | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 20 | route-3 | to | direct | direct:risky |\n| 25 | route-4 | from | file | file:inbox?move=.done |\n| 26 | route-4 | to | seda | seda:jobs |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n5 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 3 | \\(route 1\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 5 | \\(route 1\\) | wireTap direct:missing: no route in this file consumes from it |\n| 11 | \\(route 3\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 20 | route-3 | to direct:risky: no route in this file consumes from it |\n| 26 | route-4 | to seda:jobs: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 3 | \\(route 1\\) | no |\n| 7 | route-1 | no |\n| 11 | \\(route 3\\) | no |\n| 15 | route-3 | yes (2) |\n| 24 | route-4 | no |\n\n4 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n4 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 13 | \\(route 3\\) | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 13 | \\(route 3\\) | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 18 | route-3 | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 18 | route-3 | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "04-routes-3.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 1 route, 5 endpoints, 4 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 2 |\n| bean | 1 |\n| platform-http | 1 |\n| sql | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 7 | \\(route 1\\) | from | platform-http | platform-http:/api/orders |\n| 8 | \\(route 1\\) | toD | sql | sql:select 1 |\n| 9 | \\(route 1\\) | toD | bean | bean:orderService |\n| 10 | \\(route 1\\) | to | direct | direct:missing |\n| 12 | \\(route 1\\) | to | direct | direct:risky |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n3 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 6 | \\(route 1\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 10 | \\(route 1\\) | to direct:missing: no route in this file consumes from it |\n| 12 | \\(route 1\\) | to direct:risky: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines 1 global error handler (onException, errorHandler or deadLetterChannel outside the routes); they apply to every route.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 6 | \\(route 1\\) | yes (2) |\n\nEvery route has its own error handling."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\nNo findings."
+  }
+ },
+ "05-routes-4.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 2 routes, 9 endpoints, 6 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| bean | 2 |\n| http | 2 |\n| kafka | 2 |\n| direct | 1 |\n| sftp | 1 |\n| smtp | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 4 | route-0 | from | direct | direct:start |\n| 5 | route-0 | wireTap | bean | bean:orderService |\n| 6 | route-0 | wireTap | kafka | kafka:out?brokers=localhost:9092\\&saslJaasConfig=RAW\\(\\{\\{kafka.jaas\\}\\}\\) |\n| 7 | route-0 | to | kafka | kafka:out?brokers=localhost:9092\\&saslJaasConfig=RAW\\(\\{\\{kafka.jaas\\}\\}\\) |\n| 10 | route-1 | from | sftp | sftp\\:\\/\\/ops@files.example.test/out?password=\\{\\{sftp.pw\\}\\} |\n| 11 | route-1 | enrich | smtp | smtp\\:\\/\\/mail.example.test?username=a\\&password=\\{\\{mail.pw\\}\\} |\n| 12 | route-1 | wireTap | bean | bean:orderService |\n| 13 | route-1 | toD | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 14 | route-1 | to | http | http\\:\\/\\/partner.example.test/api?token=abc123 |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\nNo problems found."
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 3 | route-0 | no |\n| 9 | route-1 | no |\n\n2 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n4 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 13 | route-1 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 13 | route-1 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 14 | route-1 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 14 | route-1 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "06-routes-5.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 3 routes, 9 endpoints, 8 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 2 |\n| ftp | 1 |\n| https | 1 |\n| kafka | 1 |\n| log | 1 |\n| seda | 1 |\n| sftp | 1 |\n| sql | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 4 | dup | from | sftp | sftp\\:\\/\\/ops@files.example.test/out?password=\\{\\{sftp.pw\\}\\} |\n| 5 | dup | to | sql | sql:select 1 |\n| 8 | \\(route 2\\) | from | kafka | kafka:events?brokers=localhost:9092 |\n| 9 | \\(route 2\\) | toD | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 12 | route-2 | from | seda | seda:jobs |\n| 13 | route-2 | toD | https | https\\:\\/\\/partner.example.test/api |\n| 14 | route-2 | wireTap | direct | direct:validate |\n| 15 | route-2 | wireTap | log | log:info |\n| 17 | route-2 | to | direct | direct:risky |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n3 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 7 | \\(route 2\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 14 | route-2 | wireTap direct:validate: no route in this file consumes from it |\n| 17 | route-2 | to direct:risky: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 3 | dup | no |\n| 7 | \\(route 2\\) | no |\n| 11 | route-2 | yes (2) |\n\n2 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n2 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 9 | \\(route 2\\) | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 9 | \\(route 2\\) | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "07-routes-6.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 5 routes, 18 endpoints, 11 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 4 |\n| exec | 2 |\n| ftp | 2 |\n| kafka | 2 |\n| mock | 2 |\n| http | 1 |\n| https | 1 |\n| jms | 1 |\n| platform-http | 1 |\n| seda | 1 |\n| sftp | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 7 | route-0 | from | sftp | sftp\\:\\/\\/ops@files.example.test/out?password=\\{\\{sftp.pw\\}\\} |\n| 8 | route-0 | to | exec | exec:/usr/bin/cleanup |\n| 9 | route-0 | toD | mock | mock:result |\n| 10 | route-0 | to | https | https\\:\\/\\/partner.example.test/api |\n| 13 | \\(route 2\\) | from | seda | seda:jobs |\n| 14 | \\(route 2\\) | toD | exec | exec:/usr/bin/cleanup |\n| 17 | route-2 | from | jms | jms:queue:orders |\n| 18 | route-2 | to | kafka | kafka:out?brokers=localhost:9092\\&saslJaasConfig=RAW\\(\\{\\{kafka.jaas\\}\\}\\) |\n| 19 | route-2 | enrich | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 21 | route-2 | to | direct | direct:risky |\n| 26 | \\(route 4\\) | from | direct | direct:start |\n| 27 | \\(route 4\\) | wireTap | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 28 | \\(route 4\\) | toD | direct | direct:validate |\n| 31 | \\(route 5\\) | from | platform-http | platform-http:/api/orders |\n| 32 | \\(route 5\\) | to | mock | mock:result |\n| 33 | \\(route 5\\) | to | kafka | kafka:out?brokers=localhost:9092\\&saslJaasConfig=RAW\\(\\{\\{kafka.jaas\\}\\}\\) |\n| 34 | \\(route 5\\) | to | direct | direct:missing |\n| 35 | \\(route 5\\) | to | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n6 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 12 | \\(route 2\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 21 | route-2 | to direct:risky: no route in this file consumes from it |\n| 25 | \\(route 4\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 28 | \\(route 4\\) | toD direct:validate: no route in this file consumes from it |\n| 30 | \\(route 5\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 34 | \\(route 5\\) | to direct:missing: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines 1 global error handler (onException, errorHandler or deadLetterChannel outside the routes); they apply to every route.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 6 | route-0 | no |\n| 12 | \\(route 2\\) | no |\n| 16 | route-2 | yes (2) |\n| 25 | \\(route 4\\) | no |\n| 30 | \\(route 5\\) | no |\n\n4 routes with no error handling of their own use the global error handler."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n8 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 8 | route-0 | exec_component | the exec component runs operating system commands |\n| 14 | \\(route 2\\) | exec_component | the exec component runs operating system commands |\n| 19 | route-2 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 19 | route-2 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 27 | \\(route 4\\) | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 27 | \\(route 4\\) | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 35 | \\(route 5\\) | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 35 | \\(route 5\\) | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "08-routes-7.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 2 routes, 8 endpoints, 6 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 2 |\n| ftp | 2 |\n| log | 1 |\n| mock | 1 |\n| platform-http | 1 |\n| timer | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 4 | route-0 | from | platform-http | platform-http:/api/orders |\n| 5 | route-0 | to | direct | direct:validate |\n| 6 | route-0 | wireTap | mock | mock:result |\n| 7 | route-0 | wireTap | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 8 | route-0 | toD | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 10 | route-0 | to | direct | direct:risky |\n| 15 | route-1 | from | timer | timer:tick?period=5000 |\n| 16 | route-1 | to | log | log:info |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n2 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 5 | route-0 | to direct:validate: no route in this file consumes from it |\n| 10 | route-0 | to direct:risky: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 3 | route-0 | yes (2) |\n| 14 | route-1 | no |\n\n1 route without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n4 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 7 | route-0 | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 7 | route-0 | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 8 | route-0 | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 8 | route-0 | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "09-routes-8.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 4 routes, 18 endpoints, 12 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 2 |\n| http | 2 |\n| https | 2 |\n| platform-http | 2 |\n| seda | 2 |\n| sql | 2 |\n| bean | 1 |\n| ftp | 1 |\n| kafka | 1 |\n| mock | 1 |\n| sftp | 1 |\n| smtp | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 4 | route-0 | from | direct | direct:start |\n| 5 | route-0 | to | bean | bean:orderService |\n| 6 | route-0 | to | kafka | kafka:out?brokers=localhost:9092\\&saslJaasConfig=RAW\\(\\{\\{kafka.jaas\\}\\}\\) |\n| 7 | route-0 | to | https | https\\:\\/\\/partner.example.test/api |\n| 8 | route-0 | to | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 10 | route-0 | to | direct | direct:risky |\n| 15 | \\(route 2\\) | from | platform-http | platform-http:/api/orders |\n| 16 | \\(route 2\\) | wireTap | smtp | smtp\\:\\/\\/mail.example.test?username=a\\&password=\\{\\{mail.pw\\}\\} |\n| 17 | \\(route 2\\) | toD | seda | seda:jobs |\n| 20 | route-2 | from | platform-http | platform-http:/api/orders |\n| 21 | route-2 | to | https | https\\:\\/\\/partner.example.test/api |\n| 22 | route-2 | wireTap | seda | seda:jobs |\n| 23 | route-2 | toD | sql | sql:select 1 |\n| 24 | route-2 | enrich | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 27 | route-3 | from | sftp | sftp\\:\\/\\/ops@files.example.test/out?password=\\{\\{sftp.pw\\}\\} |\n| 28 | route-3 | wireTap | mock | mock:result |\n| 29 | route-3 | to | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 30 | route-3 | enrich | sql | sql:select 1 |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n4 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 10 | route-0 | to direct:risky: no route in this file consumes from it |\n| 14 | \\(route 2\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 17 | \\(route 2\\) | toD seda:jobs: no route in this file consumes from it |\n| 22 | route-2 | wireTap seda:jobs: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 3 | route-0 | yes (2) |\n| 14 | \\(route 2\\) | no |\n| 19 | route-2 | no |\n| 26 | route-3 | no |\n\n3 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n6 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 8 | route-0 | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 8 | route-0 | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 24 | route-2 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 24 | route-2 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 29 | route-3 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 29 | route-3 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "10-routes-9.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 4 routes, 16 endpoints, 11 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| seda | 3 |\n| direct | 2 |\n| http | 2 |\n| https | 2 |\n| bean | 1 |\n| exec | 1 |\n| ftp | 1 |\n| mock | 1 |\n| sftp | 1 |\n| smtp | 1 |\n| sql | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 7 | route-0 | from | seda | seda:jobs |\n| 8 | route-0 | toD | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 11 | route-1 | from | sftp | sftp\\:\\/\\/ops@files.example.test/out?password=\\{\\{sftp.pw\\}\\} |\n| 12 | route-1 | to | exec | exec:/usr/bin/cleanup |\n| 13 | route-1 | wireTap | https | https\\:\\/\\/partner.example.test/api |\n| 14 | route-1 | toD | mock | mock:result |\n| 15 | route-1 | to | direct | direct:validate |\n| 18 | route-2 | from | seda | seda:jobs |\n| 19 | route-2 | toD | smtp | smtp\\:\\/\\/mail.example.test?username=a\\&password=\\{\\{mail.pw\\}\\} |\n| 20 | route-2 | to | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 21 | route-2 | to | sql | sql:select 1 |\n| 22 | route-2 | toD | https | https\\:\\/\\/partner.example.test/api |\n| 25 | route-3 | from | seda | seda:jobs |\n| 26 | route-3 | to | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 27 | route-3 | to | direct | direct:validate |\n| 28 | route-3 | to | bean | bean:orderService |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n2 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 15 | route-1 | to direct:validate: no route in this file consumes from it |\n| 27 | route-3 | to direct:validate: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines 1 global error handler (onException, errorHandler or deadLetterChannel outside the routes); they apply to every route.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 6 | route-0 | no |\n| 10 | route-1 | no |\n| 17 | route-2 | no |\n| 24 | route-3 | no |\n\n4 routes with no error handling of their own use the global error handler."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n7 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 8 | route-0 | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 8 | route-0 | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 12 | route-1 | exec_component | the exec component runs operating system commands |\n| 20 | route-2 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 20 | route-2 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 26 | route-3 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 26 | route-3 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "11-routes-10.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 2 routes, 7 endpoints, 6 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 2 |\n| ftp | 1 |\n| http | 1 |\n| https | 1 |\n| platform-http | 1 |\n| timer | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 4 | dup | from | timer | timer:tick?period=5000 |\n| 5 | dup | wireTap | direct | direct:missing |\n| 6 | dup | enrich | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 9 | dup | from | platform-http | platform-http:/api/orders |\n| 10 | dup | enrich | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 11 | dup | enrich | https | https\\:\\/\\/partner.example.test/api |\n| 12 | dup | toD | direct | direct:validate |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n3 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 5 | dup | wireTap direct:missing: no route in this file consumes from it |\n| 8 | dup | route id dup is also used on line 3 |\n| 12 | dup | toD direct:validate: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 3 | dup | no |\n| 8 | dup | no |\n\n2 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n4 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 6 | dup | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 6 | dup | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 10 | dup | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 10 | dup | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "12-routes-11.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 3 routes, 13 endpoints, 8 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 4 |\n| mock | 2 |\n| platform-http | 2 |\n| ftp | 1 |\n| http | 1 |\n| https | 1 |\n| sftp | 1 |\n| sql | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 4 | route-0 | from | platform-http | platform-http:/api/orders |\n| 5 | route-0 | toD | mock | mock:result |\n| 6 | route-0 | to | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 7 | route-0 | to | direct | direct:missing |\n| 10 | route-1 | from | platform-http | platform-http:/api/orders |\n| 11 | route-1 | wireTap | direct | direct:validate |\n| 12 | route-1 | wireTap | mock | mock:result |\n| 13 | route-1 | toD | direct | direct:validate |\n| 14 | route-1 | to | sql | sql:select 1 |\n| 16 | route-1 | to | direct | direct:risky |\n| 21 | \\(route 3\\) | from | sftp | sftp\\:\\/\\/ops@files.example.test/out?password=\\{\\{sftp.pw\\}\\} |\n| 22 | \\(route 3\\) | to | https | https\\:\\/\\/partner.example.test/api |\n| 23 | \\(route 3\\) | toD | http | http\\:\\/\\/partner.example.test/api?token=abc123 |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n5 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 7 | route-0 | to direct:missing: no route in this file consumes from it |\n| 11 | route-1 | wireTap direct:validate: no route in this file consumes from it |\n| 13 | route-1 | toD direct:validate: no route in this file consumes from it |\n| 16 | route-1 | to direct:risky: no route in this file consumes from it |\n| 20 | \\(route 3\\) | the route has no id; give it one so logs, metrics and tracing name it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 3 | route-0 | no |\n| 9 | route-1 | yes (2) |\n| 20 | \\(route 3\\) | no |\n\n2 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n4 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 6 | route-0 | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 6 | route-0 | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 23 | \\(route 3\\) | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 23 | \\(route 3\\) | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "13-routes-12.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 5 routes, 22 endpoints, 11 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 7 |\n| http | 3 |\n| https | 3 |\n| seda | 2 |\n| bean | 1 |\n| exec | 1 |\n| ftp | 1 |\n| jms | 1 |\n| kafka | 1 |\n| sftp | 1 |\n| sql | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 7 | route-0 | from | seda | seda:jobs |\n| 8 | route-0 | to | sql | sql:select 1 |\n| 9 | route-0 | to | direct | direct:missing |\n| 12 | route-1 | from | sftp | sftp\\:\\/\\/ops@files.example.test/out?password=\\{\\{sftp.pw\\}\\} |\n| 13 | route-1 | to | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 14 | route-1 | to | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 15 | route-1 | to | https | https\\:\\/\\/partner.example.test/api |\n| 16 | route-1 | enrich | https | https\\:\\/\\/partner.example.test/api |\n| 18 | route-1 | to | direct | direct:risky |\n| 23 | route-2 | from | kafka | kafka:events?brokers=localhost:9092 |\n| 24 | route-2 | toD | seda | seda:jobs |\n| 25 | route-2 | enrich | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 26 | route-2 | to | direct | direct:missing |\n| 28 | route-2 | to | direct | direct:risky |\n| 33 | route-3 | from | jms | jms:queue:orders |\n| 34 | route-3 | to | exec | exec:/usr/bin/cleanup |\n| 35 | route-3 | toD | https | https\\:\\/\\/partner.example.test/api |\n| 36 | route-3 | toD | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 38 | route-3 | to | direct | direct:risky |\n| 43 | route-4 | from | direct | direct:start |\n| 44 | route-4 | to | bean | bean:orderService |\n| 46 | route-4 | to | direct | direct:risky |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n6 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 9 | route-0 | to direct:missing: no route in this file consumes from it |\n| 18 | route-1 | to direct:risky: no route in this file consumes from it |\n| 26 | route-2 | to direct:missing: no route in this file consumes from it |\n| 28 | route-2 | to direct:risky: no route in this file consumes from it |\n| 38 | route-3 | to direct:risky: no route in this file consumes from it |\n| 46 | route-4 | to direct:risky: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines 1 global error handler (onException, errorHandler or deadLetterChannel outside the routes); they apply to every route.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 6 | route-0 | no |\n| 11 | route-1 | yes (2) |\n| 22 | route-2 | yes (2) |\n| 32 | route-3 | yes (2) |\n| 42 | route-4 | yes (2) |\n\n1 route with no error handling of their own use the global error handler."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n9 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 13 | route-1 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 13 | route-1 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 14 | route-1 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 14 | route-1 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 25 | route-2 | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 25 | route-2 | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 34 | route-3 | exec_component | the exec component runs operating system commands |\n| 36 | route-3 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 36 | route-3 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "14-routes-13.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 1 route, 5 endpoints, 4 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| http | 2 |\n| direct | 1 |\n| file | 1 |\n| sql | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 4 | route-0 | from | file | file:inbox?move=.done |\n| 5 | route-0 | enrich | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 6 | route-0 | toD | sql | sql:select 1 |\n| 7 | route-0 | to | direct | direct:missing |\n| 8 | route-0 | to | http | http\\:\\/\\/partner.example.test/api?token=abc123 |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n1 problem found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 7 | route-0 | to direct:missing: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 3 | route-0 | no |\n\n1 route without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n4 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 5 | route-0 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 5 | route-0 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 8 | route-0 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 8 | route-0 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "15-routes-0.camel.yaml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nYAML routes: 4 routes, 18 endpoints, 11 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 5 |\n| https | 2 |\n| seda | 2 |\n| timer | 2 |\n| bean | 1 |\n| exec | 1 |\n| ftp | 1 |\n| kafka | 1 |\n| log | 1 |\n| mock | 1 |\n| smtp | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 5 | dup | from | seda | seda:jobs |\n| 7 | dup | to | bean | bean:orderService |\n| 9 | dup | to | kafka | kafka:out?brokers=localhost:9092\\&saslJaasConfig=RAW\\(\\{\\{kafka.jaas\\}\\}\\) |\n| 11 | dup | toD | direct | direct:validate |\n| 13 | dup | to | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 17 | dup | from | direct | direct:start |\n| 19 | dup | to | log | log:info |\n| 21 | dup | wireTap | mock | mock:result |\n| 24 | dup | to | direct | direct:risky |\n| 28 | route-2 | from | timer | timer:tick?period=5000 |\n| 30 | route-2 | to | exec | exec:/usr/bin/cleanup |\n| 32 | route-2 | to | seda | seda:jobs |\n| 34 | route-2 | wireTap | https | https\\:\\/\\/partner.example.test/api |\n| 38 | route-3 | from | timer | timer:tick?period=5000 |\n| 41 | route-3 | to | https | https\\:\\/\\/partner.example.test/api |\n| 43 | route-3 | wireTap | smtp | smtp\\:\\/\\/mail.example.test?username=a\\&password=\\{\\{mail.pw\\}\\} |\n| 45 | route-3 | wireTap | direct | direct:validate |\n| 47 | route-3 | toD | direct | direct:validate |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n5 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 11 | dup | toD direct:validate: no route in this file consumes from it |\n| 14 | dup | route id dup is also used on line 2 |\n| 24 | dup | to direct:risky: no route in this file consumes from it |\n| 45 | route-3 | wireTap direct:validate: no route in this file consumes from it |\n| 47 | route-3 | toD direct:validate: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 2 | dup | no |\n| 14 | dup | yes (1) |\n| 25 | route-2 | no |\n| 35 | route-3 | no |\n\n3 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n3 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 13 | dup | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 13 | dup | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 30 | route-2 | exec_component | the exec component runs operating system commands |"
+  }
+ },
+ "16-routes-1.camel.yaml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nYAML routes: 5 routes, 21 endpoints, 15 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 4 |\n| file | 2 |\n| ftp | 2 |\n| mock | 2 |\n| bean | 1 |\n| exec | 1 |\n| http | 1 |\n| https | 1 |\n| jms | 1 |\n| kafka | 1 |\n| seda | 1 |\n| sftp | 1 |\n| smtp | 1 |\n| sql | 1 |\n| timer | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 4 | \\(route 1\\) | from | timer | timer:tick?period=5000 |\n| 6 | \\(route 1\\) | to | direct | direct:missing |\n| 8 | \\(route 1\\) | to | seda | seda:jobs |\n| 9 | \\(route 1\\) | to | mock | mock:result |\n| 12 | \\(route 1\\) | to | direct | direct:risky |\n| 14 | \\(route 2\\) | from | file | file:inbox?move=.done |\n| 17 | \\(route 2\\) | to | mock | mock:result |\n| 18 | \\(route 2\\) | to | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 19 | \\(route 2\\) | to | https | https\\:\\/\\/partner.example.test/api |\n| 21 | \\(route 2\\) | wireTap | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 25 | route-2 | from | file | file:inbox?move=.done |\n| 27 | route-2 | to | smtp | smtp\\:\\/\\/mail.example.test?username=a\\&password=\\{\\{mail.pw\\}\\} |\n| 28 | route-2 | to | sql | sql:select 1 |\n| 29 | route-2 | to | exec | exec:/usr/bin/cleanup |\n| 31 | \\(route 4\\) | from | jms | jms:queue:orders |\n| 34 | \\(route 4\\) | to | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 38 | route-4 | from | sftp | sftp\\:\\/\\/ops@files.example.test/out?password=\\{\\{sftp.pw\\}\\} |\n| 41 | route-4 | to | kafka | kafka:out?brokers=localhost:9092\\&saslJaasConfig=RAW\\(\\{\\{kafka.jaas\\}\\}\\) |\n| 42 | route-4 | to | direct | direct:validate |\n| 44 | route-4 | to | bean | bean:orderService |\n| 45 | route-4 | to | direct | direct:validate |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n8 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 2 | \\(route 1\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 6 | \\(route 1\\) | to direct:missing: no route in this file consumes from it |\n| 8 | \\(route 1\\) | to seda:jobs: no route in this file consumes from it |\n| 12 | \\(route 1\\) | to direct:risky: no route in this file consumes from it |\n| 13 | \\(route 2\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 30 | \\(route 4\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 42 | route-4 | to direct:validate: no route in this file consumes from it |\n| 45 | route-4 | to direct:validate: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 2 | \\(route 1\\) | yes (1) |\n| 13 | \\(route 2\\) | no |\n| 22 | route-2 | no |\n| 30 | \\(route 4\\) | no |\n| 35 | route-4 | no |\n\n4 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n7 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 18 | \\(route 2\\) | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 18 | \\(route 2\\) | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 21 | \\(route 2\\) | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 21 | \\(route 2\\) | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 29 | route-2 | exec_component | the exec component runs operating system commands |\n| 34 | \\(route 4\\) | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 34 | \\(route 4\\) | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "17-routes-2.camel.yaml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nYAML routes: 6 routes, 21 endpoints, 11 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 4 |\n| kafka | 3 |\n| ftp | 2 |\n| https | 2 |\n| mock | 2 |\n| sftp | 2 |\n| sql | 2 |\n| bean | 1 |\n| exec | 1 |\n| platform-http | 1 |\n| seda | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 4 | \\(route 1\\) | from | kafka | kafka:events?brokers=localhost:9092 |\n| 6 | \\(route 1\\) | to | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 7 | \\(route 1\\) | to | https | https\\:\\/\\/partner.example.test/api |\n| 9 | \\(route 1\\) | to | direct | direct:validate |\n| 13 | route-1 | from | kafka | kafka:events?brokers=localhost:9092 |\n| 15 | route-1 | to | https | https\\:\\/\\/partner.example.test/api |\n| 19 | route-2 | from | seda | seda:jobs |\n| 22 | route-2 | toD | exec | exec:/usr/bin/cleanup |\n| 24 | route-2 | to | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 28 | route-3 | from | sftp | sftp\\:\\/\\/ops@files.example.test/out?password=\\{\\{sftp.pw\\}\\} |\n| 30 | route-3 | to | sql | sql:select 1 |\n| 32 | route-3 | to | kafka | kafka:out?brokers=localhost:9092\\&saslJaasConfig=RAW\\(\\{\\{kafka.jaas\\}\\}\\) |\n| 33 | route-3 | to | direct | direct:missing |\n| 34 | route-3 | to | bean | bean:orderService |\n| 37 | route-3 | to | direct | direct:risky |\n| 41 | route-4 | from | platform-http | platform-http:/api/orders |\n| 44 | route-4 | to | sql | sql:select 1 |\n| 48 | route-5 | from | sftp | sftp\\:\\/\\/ops@files.example.test/out?password=\\{\\{sftp.pw\\}\\} |\n| 50 | route-5 | to | mock | mock:result |\n| 51 | route-5 | to | mock | mock:result |\n| 54 | route-5 | to | direct | direct:risky |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n5 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 2 | \\(route 1\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 9 | \\(route 1\\) | to direct:validate: no route in this file consumes from it |\n| 33 | route-3 | to direct:missing: no route in this file consumes from it |\n| 37 | route-3 | to direct:risky: no route in this file consumes from it |\n| 54 | route-5 | to direct:risky: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 2 | \\(route 1\\) | no |\n| 10 | route-1 | no |\n| 16 | route-2 | no |\n| 25 | route-3 | yes (1) |\n| 38 | route-4 | no |\n| 45 | route-5 | yes (1) |\n\n4 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n5 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 6 | \\(route 1\\) | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 6 | \\(route 1\\) | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 22 | route-2 | exec_component | the exec component runs operating system commands |\n| 24 | route-2 | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 24 | route-2 | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "18-routes-3.camel.yaml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nYAML routes: 6 routes, 20 endpoints, 10 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 5 |\n| kafka | 4 |\n| seda | 3 |\n| timer | 2 |\n| bean | 1 |\n| exec | 1 |\n| http | 1 |\n| log | 1 |\n| mock | 1 |\n| platform-http | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 5 | route-0 | from | timer | timer:tick?period=5000 |\n| 7 | route-0 | to | direct | direct:missing |\n| 8 | route-0 | to | kafka | kafka:out?brokers=localhost:9092\\&saslJaasConfig=RAW\\(\\{\\{kafka.jaas\\}\\}\\) |\n| 10 | route-0 | to | direct | direct:validate |\n| 11 | route-0 | to | exec | exec:/usr/bin/cleanup |\n| 15 | route-1 | from | timer | timer:tick?period=5000 |\n| 17 | route-1 | to | log | log:info |\n| 19 | route-1 | to | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 20 | route-1 | to | seda | seda:jobs |\n| 24 | route-2 | from | direct | direct:start |\n| 27 | route-2 | toD | mock | mock:result |\n| 31 | route-3 | from | seda | seda:jobs |\n| 33 | route-3 | to | kafka | kafka:out?brokers=localhost:9092\\&saslJaasConfig=RAW\\(\\{\\{kafka.jaas\\}\\}\\) |\n| 34 | route-3 | to | seda | seda:jobs |\n| 36 | route-3 | wireTap | kafka | kafka:out?brokers=localhost:9092\\&saslJaasConfig=RAW\\(\\{\\{kafka.jaas\\}\\}\\) |\n| 39 | \\(route 5\\) | from | platform-http | platform-http:/api/orders |\n| 42 | \\(route 5\\) | to | bean | bean:orderService |\n| 46 | route-5 | from | kafka | kafka:events?brokers=localhost:9092 |\n| 49 | route-5 | to | direct | direct:missing |\n| 52 | route-5 | to | direct | direct:risky |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n5 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 7 | route-0 | to direct:missing: no route in this file consumes from it |\n| 10 | route-0 | to direct:validate: no route in this file consumes from it |\n| 37 | \\(route 5\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 49 | route-5 | to direct:missing: no route in this file consumes from it |\n| 52 | route-5 | to direct:risky: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 2 | route-0 | no |\n| 12 | route-1 | no |\n| 21 | route-2 | no |\n| 28 | route-3 | no |\n| 37 | \\(route 5\\) | no |\n| 43 | route-5 | yes (1) |\n\n5 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n3 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 11 | route-0 | exec_component | the exec component runs operating system commands |\n| 19 | route-1 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 19 | route-1 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "19-routes-4.camel.yaml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nYAML routes: 2 routes, 7 endpoints, 5 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| ftp | 2 |\n| seda | 2 |\n| direct | 1 |\n| log | 1 |\n| timer | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 5 | dup | from | seda | seda:jobs |\n| 7 | dup | to | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 8 | dup | to | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 10 | dup | wireTap | direct | direct:missing |\n| 12 | \\(route 2\\) | from | timer | timer:tick?period=5000 |\n| 15 | \\(route 2\\) | to | log | log:info |\n| 17 | \\(route 2\\) | wireTap | seda | seda:jobs |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n2 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 10 | dup | wireTap direct:missing: no route in this file consumes from it |\n| 11 | \\(route 2\\) | the route has no id; give it one so logs, metrics and tracing name it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 2 | dup | no |\n| 11 | \\(route 2\\) | no |\n\n2 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n4 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 7 | dup | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 7 | dup | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 8 | dup | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 8 | dup | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "20-routes-5.camel.yaml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nYAML routes: 4 routes, 13 endpoints, 9 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| mock | 3 |\n| direct | 2 |\n| kafka | 2 |\n| exec | 1 |\n| ftp | 1 |\n| jms | 1 |\n| platform-http | 1 |\n| sql | 1 |\n| timer | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 5 | route-0 | from | timer | timer:tick?period=5000 |\n| 8 | route-0 | toD | exec | exec:/usr/bin/cleanup |\n| 12 | route-1 | from | jms | jms:queue:orders |\n| 15 | route-1 | to | mock | mock:result |\n| 17 | route-1 | wireTap | mock | mock:result |\n| 18 | route-1 | to | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 20 | route-1 | wireTap | kafka | kafka:out?brokers=localhost:9092\\&saslJaasConfig=RAW\\(\\{\\{kafka.jaas\\}\\}\\) |\n| 24 | route-2 | from | kafka | kafka:events?brokers=localhost:9092 |\n| 27 | route-2 | wireTap | direct | direct:missing |\n| 29 | route-2 | wireTap | mock | mock:result |\n| 33 | route-3 | from | platform-http | platform-http:/api/orders |\n| 36 | route-3 | wireTap | sql | sql:select 1 |\n| 38 | route-3 | to | direct | direct:missing |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n2 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 27 | route-2 | wireTap direct:missing: no route in this file consumes from it |\n| 38 | route-3 | to direct:missing: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 2 | route-0 | no |\n| 9 | route-1 | no |\n| 21 | route-2 | no |\n| 30 | route-3 | no |\n\n4 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n3 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 8 | route-0 | exec_component | the exec component runs operating system commands |\n| 18 | route-1 | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 18 | route-1 | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "21-routes-6.camel.yaml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nYAML routes: 1 route, 5 endpoints, 4 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| kafka | 2 |\n| bean | 1 |\n| direct | 1 |\n| seda | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 3 | \\(route 1\\) | from | kafka | kafka:events?brokers=localhost:9092 |\n| 6 | \\(route 1\\) | wireTap | direct | direct:missing |\n| 7 | \\(route 1\\) | to | seda | seda:jobs |\n| 8 | \\(route 1\\) | to | bean | bean:orderService |\n| 9 | \\(route 1\\) | to | kafka | kafka:out?brokers=localhost:9092\\&saslJaasConfig=RAW\\(\\{\\{kafka.jaas\\}\\}\\) |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n3 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 2 | \\(route 1\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 6 | \\(route 1\\) | wireTap direct:missing: no route in this file consumes from it |\n| 7 | \\(route 1\\) | to seda:jobs: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 2 | \\(route 1\\) | no |\n\n1 route without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\nNo findings."
+  }
+ },
+ "22-routes-7.camel.yaml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nYAML routes: 1 route, 4 endpoints, 2 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 3 |\n| timer | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 5 | route-0 | from | timer | timer:tick?period=5000 |\n| 8 | route-0 | toD | direct | direct:missing |\n| 10 | route-0 | wireTap | direct | direct:missing |\n| 12 | route-0 | to | direct | direct:validate |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n3 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 8 | route-0 | toD direct:missing: no route in this file consumes from it |\n| 10 | route-0 | wireTap direct:missing: no route in this file consumes from it |\n| 12 | route-0 | to direct:validate: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 2 | route-0 | no |\n\n1 route without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\nNo findings."
+  }
+ },
+ "23-routes-8.camel.yaml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nYAML routes: 3 routes, 12 endpoints, 8 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| seda | 3 |\n| smtp | 2 |\n| sql | 2 |\n| file | 1 |\n| ftp | 1 |\n| jms | 1 |\n| kafka | 1 |\n| platform-http | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 5 | dup | from | file | file:inbox?move=.done |\n| 8 | dup | toD | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 10 | dup | wireTap | sql | sql:select 1 |\n| 12 | dup | wireTap | seda | seda:jobs |\n| 13 | dup | to | sql | sql:select 1 |\n| 17 | dup | from | jms | jms:queue:orders |\n| 20 | dup | to | kafka | kafka:out?brokers=localhost:9092\\&saslJaasConfig=RAW\\(\\{\\{kafka.jaas\\}\\}\\) |\n| 21 | dup | to | smtp | smtp\\:\\/\\/mail.example.test?username=a\\&password=\\{\\{mail.pw\\}\\} |\n| 23 | dup | wireTap | smtp | smtp\\:\\/\\/mail.example.test?username=a\\&password=\\{\\{mail.pw\\}\\} |\n| 26 | \\(route 3\\) | from | platform-http | platform-http:/api/orders |\n| 29 | \\(route 3\\) | toD | seda | seda:jobs |\n| 30 | \\(route 3\\) | to | seda | seda:jobs |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n5 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 12 | dup | wireTap seda:jobs: no route in this file consumes from it |\n| 14 | dup | route id dup is also used on line 2 |\n| 24 | \\(route 3\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 29 | \\(route 3\\) | toD seda:jobs: no route in this file consumes from it |\n| 30 | \\(route 3\\) | to seda:jobs: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 2 | dup | no |\n| 14 | dup | no |\n| 24 | \\(route 3\\) | no |\n\n3 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n2 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 8 | dup | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 8 | dup | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "24-routes-9.camel.yaml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nYAML routes: 4 routes, 15 endpoints, 9 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 3 |\n| jms | 3 |\n| https | 2 |\n| seda | 2 |\n| http | 1 |\n| kafka | 1 |\n| mock | 1 |\n| sql | 1 |\n| timer | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 5 | route-0 | from | jms | jms:queue:orders |\n| 8 | route-0 | toD | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 9 | route-0 | to | https | https\\:\\/\\/partner.example.test/api |\n| 10 | route-0 | to | seda | seda:jobs |\n| 12 | route-0 | to | mock | mock:result |\n| 15 | route-0 | to | direct | direct:risky |\n| 17 | \\(route 2\\) | from | timer | timer:tick?period=5000 |\n| 19 | \\(route 2\\) | to | direct | direct:missing |\n| 20 | \\(route 2\\) | to | seda | seda:jobs |\n| 22 | \\(route 2\\) | wireTap | https | https\\:\\/\\/partner.example.test/api |\n| 25 | \\(route 2\\) | to | direct | direct:risky |\n| 27 | \\(route 3\\) | from | jms | jms:queue:orders |\n| 29 | \\(route 3\\) | to | sql | sql:select 1 |\n| 32 | \\(route 4\\) | from | jms | jms:queue:orders |\n| 35 | \\(route 4\\) | to | kafka | kafka:out?brokers=localhost:9092\\&saslJaasConfig=RAW\\(\\{\\{kafka.jaas\\}\\}\\) |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n8 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 10 | route-0 | to seda:jobs: no route in this file consumes from it |\n| 15 | route-0 | to direct:risky: no route in this file consumes from it |\n| 16 | \\(route 2\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 19 | \\(route 2\\) | to direct:missing: no route in this file consumes from it |\n| 20 | \\(route 2\\) | to seda:jobs: no route in this file consumes from it |\n| 25 | \\(route 2\\) | to direct:risky: no route in this file consumes from it |\n| 26 | \\(route 3\\) | the route has no id; give it one so logs, metrics and tracing name it |\n| 30 | \\(route 4\\) | the route has no id; give it one so logs, metrics and tracing name it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 2 | route-0 | yes (1) |\n| 16 | \\(route 2\\) | yes (1) |\n| 26 | \\(route 3\\) | no |\n| 30 | \\(route 4\\) | no |\n\n2 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n2 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 8 | route-0 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 8 | route-0 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "25-routes-10.camel.yaml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nYAML routes: 3 routes, 9 endpoints, 7 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| http | 3 |\n| direct | 1 |\n| https | 1 |\n| kafka | 1 |\n| mock | 1 |\n| sftp | 1 |\n| smtp | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 5 | route-0 | from | direct | direct:start |\n| 8 | route-0 | wireTap | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 9 | route-0 | to | https | https\\:\\/\\/partner.example.test/api |\n| 13 | route-1 | from | kafka | kafka:events?brokers=localhost:9092 |\n| 15 | route-1 | to | mock | mock:result |\n| 16 | route-1 | to | smtp | smtp\\:\\/\\/mail.example.test?username=a\\&password=\\{\\{mail.pw\\}\\} |\n| 18 | \\(route 3\\) | from | sftp | sftp\\:\\/\\/ops@files.example.test/out?password=\\{\\{sftp.pw\\}\\} |\n| 20 | \\(route 3\\) | to | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 22 | \\(route 3\\) | wireTap | http | http\\:\\/\\/partner.example.test/api?token=abc123 |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n1 problem found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 17 | \\(route 3\\) | the route has no id; give it one so logs, metrics and tracing name it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 2 | route-0 | no |\n| 10 | route-1 | no |\n| 17 | \\(route 3\\) | no |\n\n3 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n6 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 8 | route-0 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 8 | route-0 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 20 | \\(route 3\\) | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 20 | \\(route 3\\) | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 22 | \\(route 3\\) | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 22 | \\(route 3\\) | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "26-routes-11.camel.yaml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nYAML routes: 5 routes, 15 endpoints, 11 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| bean | 2 |\n| direct | 2 |\n| http | 2 |\n| sftp | 2 |\n| exec | 1 |\n| ftp | 1 |\n| jms | 1 |\n| kafka | 1 |\n| log | 1 |\n| seda | 1 |\n| smtp | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 5 | route-0 | from | sftp | sftp\\:\\/\\/ops@files.example.test/out?password=\\{\\{sftp.pw\\}\\} |\n| 7 | route-0 | to | log | log:info |\n| 8 | route-0 | to | bean | bean:orderService |\n| 9 | route-0 | to | bean | bean:orderService |\n| 13 | route-1 | from | kafka | kafka:events?brokers=localhost:9092 |\n| 16 | route-1 | toD | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 18 | route-1 | toD | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 22 | route-2 | from | sftp | sftp\\:\\/\\/ops@files.example.test/out?password=\\{\\{sftp.pw\\}\\} |\n| 24 | route-2 | to | direct | direct:validate |\n| 26 | route-2 | wireTap | seda | seda:jobs |\n| 30 | route-3 | from | direct | direct:start |\n| 32 | route-3 | to | smtp | smtp\\:\\/\\/mail.example.test?username=a\\&password=\\{\\{mail.pw\\}\\} |\n| 36 | route-4 | from | jms | jms:queue:orders |\n| 39 | route-4 | toD | exec | exec:/usr/bin/cleanup |\n| 41 | route-4 | wireTap | http | http\\:\\/\\/partner.example.test/api?token=abc123 |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n2 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 24 | route-2 | to direct:validate: no route in this file consumes from it |\n| 26 | route-2 | wireTap seda:jobs: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 2 | route-0 | no |\n| 10 | route-1 | no |\n| 19 | route-2 | no |\n| 27 | route-3 | no |\n| 33 | route-4 | no |\n\n5 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n7 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 16 | route-1 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 16 | route-1 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 18 | route-1 | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 18 | route-1 | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 39 | route-4 | exec_component | the exec component runs operating system commands |\n| 41 | route-4 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 41 | route-4 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "27-spring-context.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 1 route, 5 endpoints, 5 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| https | 1 |\n| kafka | 1 |\n| log | 1 |\n| mock | 1 |\n| smtp | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 5 | route-1 | from | kafka | kafka:events?brokers=localhost:9092 |\n| 6 | route-1 | to | smtp | smtp\\:\\/\\/mail.example.test?username=a\\&password=\\{\\{mail.pw\\}\\} |\n| 7 | route-1 | to | mock | mock:result |\n| 8 | route-1 | toD | https | https\\:\\/\\/partner.example.test/api |\n| 9 | route-1 | enrich | log | log:info |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\nNo problems found."
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines 1 global error handler (onException, errorHandler or deadLetterChannel outside the routes); they apply to every route.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 4 | route-1 | no |\n\n1 route with no error handling of their own use the global error handler."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\nNo findings."
+  }
+ },
+ "28-prefixed.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  }
+ },
+ "29-no-from.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 1 route, 2 endpoints, 2 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 1 |\n| exec | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 3 | route-1 | to | exec | exec:/usr/bin/cleanup |\n| 5 | route-1 | to | direct | direct:risky |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n2 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 2 | route-1 | the route has no from endpoint |\n| 5 | route-1 | to direct:risky: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 2 | route-1 | yes (2) |\n\nEvery route has its own error handling."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n1 finding.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 3 | route-1 | exec_component | the exec component runs operating system commands |"
+  }
+ },
+ "30-two-froms.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 1 route, 3 endpoints, 2 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 2 |\n| log | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 3 | multi | from | direct | direct:a |\n| 4 | multi | from | direct | direct:b |\n| 5 | multi | to | log | log:x |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n1 problem found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 4 | multi | the route has more than one from endpoint |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 2 | multi | no |\n\n1 route without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\nNo findings."
+  }
+ },
+ "31-empty-uri.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 1 route, 2 endpoints, 2 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| \\(none\\) | 1 |\n| direct | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 3 | e | from | direct | direct:e |\n| 4 | e | to | - | - |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n1 problem found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 4 | e | to has no uri |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 2 | e | no |\n\n1 route without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\nNo findings."
+  }
+ },
+ "32-comments.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 1 route, 2 endpoints, 2 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 1 |\n| log | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 4 | real | from | direct | direct:real |\n| 5 | real | to | log | log:real |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\nNo problems found."
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 3 | real | no |\n\n1 route without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\nNo findings."
+  }
+ },
+ "33-single-quotes.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 1 route, 2 endpoints, 2 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| http | 1 |\n| timer | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 3 | sq | from | timer | timer:t |\n| 4 | sq | to | http | http\\:\\/\\/example.test/a?apiKey=XYZ |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\nNo problems found."
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 2 | sq | no |\n\n1 route without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n2 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 4 | sq | credentials_in_uri | option apiKey has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 4 | sq | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "34-user-info.yaml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nYAML routes: 1 route, 2 endpoints, 2 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| ftp | 1 |\n| log | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 4 | creds | from | ftp | ftp\\:\\/\\/admin:secret@files.example.test/in |\n| 6 | creds | to | log | log:x |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\nNo problems found."
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 1 | creds | no |\n\n1 route without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n2 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 4 | creds | credentials_in_uri | the URI contains user:password@ |\n| 4 | creds | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "35-global-handler.yaml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nYAML routes: 1 route, 2 endpoints, 2 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 1 |\n| log | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 7 | covered | from | direct | direct:covered |\n| 9 | covered | to | log | log:x |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\nNo problems found."
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines 1 global error handler (onException, errorHandler or deadLetterChannel outside the routes); they apply to every route.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 4 | covered | no |\n\n1 route with no error handling of their own use the global error handler."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\nNo findings."
+  }
+ },
+ "36-not-camel.yaml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  }
+ },
+ "37-not-camel.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  }
+ },
+ "38-empty.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\nThis file contains no Camel routes (XML with <route> or YAML with - route: or - from:)."
+  }
+ },
+ "39-crlf.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 3 routes, 13 endpoints, 8 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 3 |\n| log | 2 |\n| sql | 2 |\n| timer | 2 |\n| bean | 1 |\n| file | 1 |\n| http | 1 |\n| mock | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 4 | route-0 | from | file | file:inbox?move=.done |\n| 5 | route-0 | wireTap | direct | direct:validate |\n| 6 | route-0 | to | log | log:info |\n| 9 | route-1 | from | timer | timer:tick?period=5000 |\n| 10 | route-1 | to | sql | sql:select 1 |\n| 11 | route-1 | wireTap | mock | mock:result |\n| 12 | route-1 | to | http | http\\:\\/\\/partner.example.test/api?token=abc123 |\n| 13 | route-1 | enrich | direct | direct:missing |\n| 15 | route-1 | to | direct | direct:risky |\n| 20 | route-2 | from | timer | timer:tick?period=5000 |\n| 21 | route-2 | enrich | log | log:info |\n| 22 | route-2 | to | bean | bean:orderService |\n| 23 | route-2 | to | sql | sql:select 1 |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n3 problems found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 5 | route-0 | wireTap direct:validate: no route in this file consumes from it |\n| 13 | route-1 | enrich direct:missing: no route in this file consumes from it |\n| 15 | route-1 | to direct:risky: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 3 | route-0 | no |\n| 8 | route-1 | yes (2) |\n| 19 | route-2 | no |\n\n2 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n2 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 12 | route-1 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 12 | route-1 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "40-bom.camel.yaml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nYAML routes: 2 routes, 9 endpoints, 8 components.\n\n| Component | Endpoints |\n| --- | ---: |\n| mock | 2 |\n| ftp | 1 |\n| http | 1 |\n| kafka | 1 |\n| platform-http | 1 |\n| sftp | 1 |\n| smtp | 1 |\n| sql | 1 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 5 | route-0 | from | platform-http | platform-http:/api/orders |\n| 8 | route-0 | wireTap | sql | sql:select 1 |\n| 9 | route-0 | to | ftp | ftp\\:\\/\\/files.example.test/in?password=plain |\n| 10 | route-0 | to | mock | mock:result |\n| 14 | route-1 | from | sftp | sftp\\:\\/\\/ops@files.example.test/out?password=\\{\\{sftp.pw\\}\\} |\n| 16 | route-1 | to | kafka | kafka:out?brokers=localhost:9092\\&saslJaasConfig=RAW\\(\\{\\{kafka.jaas\\}\\}\\) |\n| 17 | route-1 | to | mock | mock:result |\n| 18 | route-1 | to | smtp | smtp\\:\\/\\/mail.example.test?username=a\\&password=\\{\\{mail.pw\\}\\} |\n| 20 | route-1 | to | http | http\\:\\/\\/partner.example.test/api?token=abc123 |"
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\nNo problems found."
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 2 | route-0 | no |\n| 11 | route-1 | no |\n\n2 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\n4 findings.\n\n| Line | Route | Check | Finding |\n| ---: | --- | --- | --- |\n| 9 | route-0 | credentials_in_uri | option password has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 9 | route-0 | plaintext_transport | ftp sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |\n| 20 | route-1 | credentials_in_uri | option token has a literal value; use a property placeholder such as \\{\\{name\\}\\} |\n| 20 | route-1 | plaintext_transport | http sends data unencrypted; use the TLS variant \\(https, ftps or sftp\\) |"
+  }
+ },
+ "41-many-routes.xml": {
+  "reportSummary": {
+   "exact": "# Route Summary\n\nXML routes: 600 routes, 1200 endpoints, 1 component.\n\n| Component | Endpoints |\n| --- | ---: |\n| direct | 1200 |"
+  },
+  "reportEndpoints": {
+   "exact": "# Endpoints\n\n| Line | Route | Role | Component | URI |\n| ---: | --- | --- | --- | --- |\n| 2 | r0 | from | direct | direct:r0 |\n| 2 | r0 | to | direct | direct:r1 |\n| 3 | r1 | from | direct | direct:r1 |\n| 3 | r1 | to | direct | direct:r2 |\n| 4 | r2 | from | direct | direct:r2 |\n| 4 | r2 | to | direct | direct:r3 |\n| 5 | r3 | from | direct | direct:r3 |\n| 5 | r3 | to | direct | direct:r4 |\n| 6 | r4 | from | direct | direct:r4 |\n| 6 | r4 | to | direct | direct:r5 |\n| 7 | r5 | from | direct | direct:r5 |\n| 7 | r5 | to | direct | direct:r6 |\n| 8 | r6 | from | direct | direct:r6 |\n| 8 | r6 | to | direct | direct:r7 |\n| 9 | r7 | from | direct | direct:r7 |\n| 9 | r7 | to | direct | direct:r8 |\n| 10 | r8 | from | direct | direct:r8 |\n| 10 | r8 | to | direct | direct:r9 |\n| 11 | r9 | from | direct | direct:r9 |\n| 11 | r9 | to | direct | direct:r10 |\n| 12 | r10 | from | direct | direct:r10 |\n| 12 | r10 | to | direct | direct:r11 |\n| 13 | r11 | from | direct | direct:r11 |\n| 13 | r11 | to | direct | direct:r12 |\n| 14 | r12 | from | direct | direct:r12 |\n| 14 | r12 | to | direct | direct:r13 |\n| 15 | r13 | from | direct | direct:r13 |\n| 15 | r13 | to | direct | direct:r14 |\n| 16 | r14 | from | direct | direct:r14 |\n| 16 | r14 | to | direct | direct:r15 |\n| 17 | r15 | from | direct | direct:r15 |\n| 17 | r15 | to | direct | direct:r16 |\n| 18 | r16 | from | direct | direct:r16 |\n| 18 | r16 | to | direct | direct:r17 |\n| 19 | r17 | from | direct | direct:r17 |\n| 19 | r17 | to | direct | direct:r18 |\n| 20 | r18 | from | direct | direct:r18 |\n| 20 | r18 | to | direct | direct:r19 |\n| 21 | r19 | from | direct | direct:r19 |\n| 21 | r19 | to | direct | direct:r20 |\n| 22 | r20 | from | direct | direct:r20 |\n| 22 | r20 | to | direct | direct:r21 |\n| 23 | r21 | from | direct | direct:r21 |\n| 23 | r21 | to | direct | direct:r22 |\n| 24 | r22 | from | direct | direct:r22 |\n| 24 | r22 | to | direct | direct:r23 |\n| 25 | r23 | from | direct | direct:r23 |\n| 25 | r23 | to | direct | direct:r24 |\n| 26 | r24 | from | direct | direct:r24 |\n| 26 | r24 | to | direct | direct:r25 |\n| 27 | r25 | from | direct | direct:r25 |\n| 27 | r25 | to | direct | direct:r26 |\n| 28 | r26 | from | direct | direct:r26 |\n| 28 | r26 | to | direct | direct:r27 |\n| 29 | r27 | from | direct | direct:r27 |\n| 29 | r27 | to | direct | direct:r28 |\n| 30 | r28 | from | direct | direct:r28 |\n| 30 | r28 | to | direct | direct:r29 |\n| 31 | r29 | from | direct | direct:r29 |\n| 31 | r29 | to | direct | direct:r30 |\n| 32 | r30 | from | direct | direct:r30 |\n| 32 | r30 | to | direct | direct:r31 |\n| 33 | r31 | from | direct | direct:r31 |\n| 33 | r31 | to | direct | direct:r32 |\n| 34 | r32 | from | direct | direct:r32 |\n| 34 | r32 | to | direct | direct:r33 |\n| 35 | r33 | from | direct | direct:r33 |\n| 35 | r33 | to | direct | direct:r34 |\n| 36 | r34 | from | direct | direct:r34 |\n| 36 | r34 | to | direct | direct:r35 |\n| 37 | r35 | from | direct | direct:r35 |\n| 37 | r35 | to | direct | direct:r36 |\n| 38 | r36 | from | direct | direct:r36 |\n| 38 | r36 | to | direct | direct:r37 |\n| 39 | r37 | from | direct | direct:r37 |\n| 39 | r37 | to | direct | direct:r38 |\n| 40 | r38 | from | direct | direct:r38 |\n| 40 | r38 | to | direct | direct:r39 |\n| 41 | r39 | from | direct | direct:r39 |\n| 41 | r39 | to | direct | direct:r40 |\n| 42 | r40 | from | direct | direct:r40 |\n| 42 | r40 | to | direct | direct:r41 |\n| 43 | r41 | from | direct | direct:r41 |\n| 43 | r41 | to | direct | direct:r42 |\n| 44 | r42 | from | direct | direct:r42 |\n| 44 | r42 | to | direct | direct:r43 |\n| 45 | r43 | from | direct | direct:r43 |\n| 45 | r43 | to | direct | direct:r44 |\n| 46 | r44 | from | direct | direct:r44 |\n| 46 | r44 | to | direct | direct:r45 |\n| 47 | r45 | from | direct | direct:r45 |\n| 47 | r45 | to | direct | direct:r46 |\n| 48 | r46 | from | direct | direct:r46 |\n| 48 | r46 | to | direct | direct:r47 |\n| 49 | r47 | from | direct | direct:r47 |\n| 49 | r47 | to | direct | direct:r48 |\n| 50 | r48 | from | direct | direct:r48 |\n| 50 | r48 | to | direct | direct:r49 |\n| 51 | r49 | from | direct | direct:r49 |\n| 51 | r49 | to | direct | direct:r50 |\n| 52 | r50 | from | direct | direct:r50 |\n| 52 | r50 | to | direct | direct:r51 |\n| 53 | r51 | from | direct | direct:r51 |\n| 53 | r51 | to | direct | direct:r52 |\n| 54 | r52 | from | direct | direct:r52 |\n| 54 | r52 | to | direct | direct:r53 |\n| 55 | r53 | from | direct | direct:r53 |\n| 55 | r53 | to | direct | direct:r54 |\n| 56 | r54 | from | direct | direct:r54 |\n| 56 | r54 | to | direct | direct:r55 |\n| 57 | r55 | from | direct | direct:r55 |\n| 57 | r55 | to | direct | direct:r56 |\n| 58 | r56 | from | direct | direct:r56 |\n| 58 | r56 | to | direct | direct:r57 |\n| 59 | r57 | from | direct | direct:r57 |\n| 59 | r57 | to | direct | direct:r58 |\n| 60 | r58 | from | direct | direct:r58 |\n| 60 | r58 | to | direct | direct:r59 |\n| 61 | r59 | from | direct | direct:r59 |\n| 61 | r59 | to | direct | direct:r60 |\n| 62 | r60 | from | direct | direct:r60 |\n| 62 | r60 | to | direct | direct:r61 |\n| 63 | r61 | from | direct | direct:r61 |\n| 63 | r61 | to | direct | direct:r62 |\n| 64 | r62 | from | direct | direct:r62 |\n| 64 | r62 | to | direct | direct:r63 |\n| 65 | r63 | from | direct | direct:r63 |\n| 65 | r63 | to | direct | direct:r64 |\n| 66 | r64 | from | direct | direct:r64 |\n| 66 | r64 | to | direct | direct:r65 |\n| 67 | r65 | from | direct | direct:r65 |\n| 67 | r65 | to | direct | direct:r66 |\n| 68 | r66 | from | direct | direct:r66 |\n| 68 | r66 | to | direct | direct:r67 |\n| 69 | r67 | from | direct | direct:r67 |\n| 69 | r67 | to | direct | direct:r68 |\n| 70 | r68 | from | direct | direct:r68 |\n| 70 | r68 | to | direct | direct:r69 |\n| 71 | r69 | from | direct | direct:r69 |\n| 71 | r69 | to | direct | direct:r70 |\n| 72 | r70 | from | direct | direct:r70 |\n| 72 | r70 | to | direct | direct:r71 |\n| 73 | r71 | from | direct | direct:r71 |\n| 73 | r71 | to | direct | direct:r72 |\n| 74 | r72 | from | direct | direct:r72 |\n| 74 | r72 | to | direct | direct:r73 |\n| 75 | r73 | from | direct | direct:r73 |\n| 75 | r73 | to | direct | direct:r74 |\n| 76 | r74 | from | direct | direct:r74 |\n| 76 | r74 | to | direct | direct:r75 |\n| 77 | r75 | from | direct | direct:r75 |\n| 77 | r75 | to | direct | direct:r76 |\n| 78 | r76 | from | direct | direct:r76 |\n| 78 | r76 | to | direct | direct:r77 |\n| 79 | r77 | from | direct | direct:r77 |\n| 79 | r77 | to | direct | direct:r78 |\n| 80 | r78 | from | direct | direct:r78 |\n| 80 | r78 | to | direct | direct:r79 |\n| 81 | r79 | from | direct | direct:r79 |\n| 81 | r79 | to | direct | direct:r80 |\n| 82 | r80 | from | direct | direct:r80 |\n| 82 | r80 | to | direct | direct:r81 |\n| 83 | r81 | from | direct | direct:r81 |\n| 83 | r81 | to | direct | direct:r82 |\n| 84 | r82 | from | direct | direct:r82 |\n| 84 | r82 | to | direct | direct:r83 |\n| 85 | r83 | from | direct | direct:r83 |\n| 85 | r83 | to | direct | direct:r84 |\n| 86 | r84 | from | direct | direct:r84 |\n| 86 | r84 | to | direct | direct:r85 |\n| 87 | r85 | from | direct | direct:r85 |\n| 87 | r85 | to | direct | direct:r86 |\n| 88 | r86 | from | direct | direct:r86 |\n| 88 | r86 | to | direct | direct:r87 |\n| 89 | r87 | from | direct | direct:r87 |\n| 89 | r87 | to | direct | direct:r88 |\n| 90 | r88 | from | direct | direct:r88 |\n| 90 | r88 | to | direct | direct:r89 |\n| 91 | r89 | from | direct | direct:r89 |\n| 91 | r89 | to | direct | direct:r90 |\n| 92 | r90 | from | direct | direct:r90 |\n| 92 | r90 | to | direct | direct:r91 |\n| 93 | r91 | from | direct | direct:r91 |\n| 93 | r91 | to | direct | direct:r92 |\n| 94 | r92 | from | direct | direct:r92 |\n| 94 | r92 | to | direct | direct:r93 |\n| 95 | r93 | from | direct | direct:r93 |\n| 95 | r93 | to | direct | direct:r94 |\n| 96 | r94 | from | direct | direct:r94 |\n| 96 | r94 | to | direct | direct:r95 |\n| 97 | r95 | from | direct | direct:r95 |\n| 97 | r95 | to | direct | direct:r96 |\n| 98 | r96 | from | direct | direct:r96 |\n| 98 | r96 | to | direct | direct:r97 |\n| 99 | r97 | from | direct | direct:r97 |\n| 99 | r97 | to | direct | direct:r98 |\n| 100 | r98 | from | direct | direct:r98 |\n| 100 | r98 | to | direct | direct:r99 |\n| 101 | r99 | from | direct | direct:r99 |\n| 101 | r99 | to | direct | direct:r100 |\n| 102 | r100 | from | direct | direct:r100 |\n| 102 | r100 | to | direct | direct:r101 |\n| 103 | r101 | from | direct | direct:r101 |\n| 103 | r101 | to | direct | direct:r102 |\n| 104 | r102 | from | direct | direct:r102 |\n| 104 | r102 | to | direct | direct:r103 |\n| 105 | r103 | from | direct | direct:r103 |\n| 105 | r103 | to | direct | direct:r104 |\n| 106 | r104 | from | direct | direct:r104 |\n| 106 | r104 | to | direct | direct:r105 |\n| 107 | r105 | from | direct | direct:r105 |\n| 107 | r105 | to | direct | direct:r106 |\n| 108 | r106 | from | direct | direct:r106 |\n| 108 | r106 | to | direct | direct:r107 |\n| 109 | r107 | from | direct | direct:r107 |\n| 109 | r107 | to | direct | direct:r108 |\n| 110 | r108 | from | direct | direct:r108 |\n| 110 | r108 | to | direct | direct:r109 |\n| 111 | r109 | from | direct | direct:r109 |\n| 111 | r109 | to | direct | direct:r110 |\n| 112 | r110 | from | direct | direct:r110 |\n| 112 | r110 | to | direct | direct:r111 |\n| 113 | r111 | from | direct | direct:r111 |\n| 113 | r111 | to | direct | direct:r112 |\n| 114 | r112 | from | direct | direct:r112 |\n| 114 | r112 | to | direct | direct:r113 |\n| 115 | r113 | from | direct | direct:r113 |\n| 115 | r113 | to | direct | direct:r114 |\n| 116 | r114 | from | direct | direct:r114 |\n| 116 | r114 | to | direct | direct:r115 |\n| 117 | r115 | from | direct | direct:r115 |\n| 117 | r115 | to | direct | direct:r116 |\n| 118 | r116 | from | direct | direct:r116 |\n| 118 | r116 | to | direct | direct:r117 |\n| 119 | r117 | from | direct | direct:r117 |\n| 119 | r117 | to | direct | direct:r118 |\n| 120 | r118 | from | direct | direct:r118 |\n| 120 | r118 | to | direct | direct:r119 |\n| 121 | r119 | from | direct | direct:r119 |\n| 121 | r119 | to | direct | direct:r120 |\n| 122 | r120 | from | direct | direct:r120 |\n| 122 | r120 | to | direct | direct:r121 |\n| 123 | r121 | from | direct | direct:r121 |\n| 123 | r121 | to | direct | direct:r122 |\n| 124 | r122 | from | direct | direct:r122 |\n| 124 | r122 | to | direct | direct:r123 |\n| 125 | r123 | from | direct | direct:r123 |\n| 125 | r123 | to | direct | direct:r124 |\n| 126 | r124 | from | direct | direct:r124 |\n| 126 | r124 | to | direct | direct:r125 |\n| 127 | r125 | from | direct | direct:r125 |\n| 127 | r125 | to | direct | direct:r126 |\n| 128 | r126 | from | direct | direct:r126 |\n| 128 | r126 | to | direct | direct:r127 |\n| 129 | r127 | from | direct | direct:r127 |\n| 129 | r127 | to | direct | direct:r128 |\n| 130 | r128 | from | direct | direct:r128 |\n| 130 | r128 | to | direct | direct:r129 |\n| 131 | r129 | from | direct | direct:r129 |\n| 131 | r129 | to | direct | direct:r130 |\n| 132 | r130 | from | direct | direct:r130 |\n| 132 | r130 | to | direct | direct:r131 |\n| 133 | r131 | from | direct | direct:r131 |\n| 133 | r131 | to | direct | direct:r132 |\n| 134 | r132 | from | direct | direct:r132 |\n| 134 | r132 | to | direct | direct:r133 |\n| 135 | r133 | from | direct | direct:r133 |\n| 135 | r133 | to | direct | direct:r134 |\n| 136 | r134 | from | direct | direct:r134 |\n| 136 | r134 | to | direct | direct:r135 |\n| 137 | r135 | from | direct | direct:r135 |\n| 137 | r135 | to | direct | direct:r136 |\n| 138 | r136 | from | direct | direct:r136 |\n| 138 | r136 | to | direct | direct:r137 |\n| 139 | r137 | from | direct | direct:r137 |\n| 139 | r137 | to | direct | direct:r138 |\n| 140 | r138 | from | direct | direct:r138 |\n| 140 | r138 | to | direct | direct:r139 |\n| 141 | r139 | from | direct | direct:r139 |\n| 141 | r139 | to | direct | direct:r140 |\n| 142 | r140 | from | direct | direct:r140 |\n| 142 | r140 | to | direct | direct:r141 |\n| 143 | r141 | from | direct | direct:r141 |\n| 143 | r141 | to | direct | direct:r142 |\n| 144 | r142 | from | direct | direct:r142 |\n| 144 | r142 | to | direct | direct:r143 |\n| 145 | r143 | from | direct | direct:r143 |\n| 145 | r143 | to | direct | direct:r144 |\n| 146 | r144 | from | direct | direct:r144 |\n| 146 | r144 | to | direct | direct:r145 |\n| 147 | r145 | from | direct | direct:r145 |\n| 147 | r145 | to | direct | direct:r146 |\n| 148 | r146 | from | direct | direct:r146 |\n| 148 | r146 | to | direct | direct:r147 |\n| 149 | r147 | from | direct | direct:r147 |\n| 149 | r147 | to | direct | direct:r148 |\n| 150 | r148 | from | direct | direct:r148 |\n| 150 | r148 | to | direct | direct:r149 |\n| 151 | r149 | from | direct | direct:r149 |\n| 151 | r149 | to | direct | direct:r150 |\n| 152 | r150 | from | direct | direct:r150 |\n| 152 | r150 | to | direct | direct:r151 |\n| 153 | r151 | from | direct | direct:r151 |\n| 153 | r151 | to | direct | direct:r152 |\n| 154 | r152 | from | direct | direct:r152 |\n| 154 | r152 | to | direct | direct:r153 |\n| 155 | r153 | from | direct | direct:r153 |\n| 155 | r153 | to | direct | direct:r154 |\n| 156 | r154 | from | direct | direct:r154 |\n| 156 | r154 | to | direct | direct:r155 |\n| 157 | r155 | from | direct | direct:r155 |\n| 157 | r155 | to | direct | direct:r156 |\n| 158 | r156 | from | direct | direct:r156 |\n| 158 | r156 | to | direct | direct:r157 |\n| 159 | r157 | from | direct | direct:r157 |\n| 159 | r157 | to | direct | direct:r158 |\n| 160 | r158 | from | direct | direct:r158 |\n| 160 | r158 | to | direct | direct:r159 |\n| 161 | r159 | from | direct | direct:r159 |\n| 161 | r159 | to | direct | direct:r160 |\n| 162 | r160 | from | direct | direct:r160 |\n| 162 | r160 | to | direct | direct:r161 |\n| 163 | r161 | from | direct | direct:r161 |\n| 163 | r161 | to | direct | direct:r162 |\n| 164 | r162 | from | direct | direct:r162 |\n| 164 | r162 | to | direct | direct:r163 |\n| 165 | r163 | from | direct | direct:r163 |\n| 165 | r163 | to | direct | direct:r164 |\n| 166 | r164 | from | direct | direct:r164 |\n| 166 | r164 | to | direct | direct:r165 |\n| 167 | r165 | from | direct | direct:r165 |\n| 167 | r165 | to | direct | direct:r166 |\n| 168 | r166 | from | direct | direct:r166 |\n| 168 | r166 | to | direct | direct:r167 |\n| 169 | r167 | from | direct | direct:r167 |\n| 169 | r167 | to | direct | direct:r168 |\n| 170 | r168 | from | direct | direct:r168 |\n| 170 | r168 | to | direct | direct:r169 |\n| 171 | r169 | from | direct | direct:r169 |\n| 171 | r169 | to | direct | direct:r170 |\n| 172 | r170 | from | direct | direct:r170 |\n| 172 | r170 | to | direct | direct:r171 |\n| 173 | r171 | from | direct | direct:r171 |\n| 173 | r171 | to | direct | direct:r172 |\n| 174 | r172 | from | direct | direct:r172 |\n| 174 | r172 | to | direct | direct:r173 |\n| 175 | r173 | from | direct | direct:r173 |\n| 175 | r173 | to | direct | direct:r174 |\n| 176 | r174 | from | direct | direct:r174 |\n| 176 | r174 | to | direct | direct:r175 |\n| 177 | r175 | from | direct | direct:r175 |\n| 177 | r175 | to | direct | direct:r176 |\n| 178 | r176 | from | direct | direct:r176 |\n| 178 | r176 | to | direct | direct:r177 |\n| 179 | r177 | from | direct | direct:r177 |\n| 179 | r177 | to | direct | direct:r178 |\n| 180 | r178 | from | direct | direct:r178 |\n| 180 | r178 | to | direct | direct:r179 |\n| 181 | r179 | from | direct | direct:r179 |\n| 181 | r179 | to | direct | direct:r180 |\n| 182 | r180 | from | direct | direct:r180 |\n| 182 | r180 | to | direct | direct:r181 |\n| 183 | r181 | from | direct | direct:r181 |\n| 183 | r181 | to | direct | direct:r182 |\n| 184 | r182 | from | direct | direct:r182 |\n| 184 | r182 | to | direct | direct:r183 |\n| 185 | r183 | from | direct | direct:r183 |\n| 185 | r183 | to | direct | direct:r184 |\n| 186 | r184 | from | direct | direct:r184 |\n| 186 | r184 | to | direct | direct:r185 |\n| 187 | r185 | from | direct | direct:r185 |\n| 187 | r185 | to | direct | direct:r186 |\n| 188 | r186 | from | direct | direct:r186 |\n| 188 | r186 | to | direct | direct:r187 |\n| 189 | r187 | from | direct | direct:r187 |\n| 189 | r187 | to | direct | direct:r188 |\n| 190 | r188 | from | direct | direct:r188 |\n| 190 | r188 | to | direct | direct:r189 |\n| 191 | r189 | from | direct | direct:r189 |\n| 191 | r189 | to | direct | direct:r190 |\n| 192 | r190 | from | direct | direct:r190 |\n| 192 | r190 | to | direct | direct:r191 |\n| 193 | r191 | from | direct | direct:r191 |\n| 193 | r191 | to | direct | direct:r192 |\n| 194 | r192 | from | direct | direct:r192 |\n| 194 | r192 | to | direct | direct:r193 |\n| 195 | r193 | from | direct | direct:r193 |\n| 195 | r193 | to | direct | direct:r194 |\n| 196 | r194 | from | direct | direct:r194 |\n| 196 | r194 | to | direct | direct:r195 |\n| 197 | r195 | from | direct | direct:r195 |\n| 197 | r195 | to | direct | direct:r196 |\n| 198 | r196 | from | direct | direct:r196 |\n| 198 | r196 | to | direct | direct:r197 |\n| 199 | r197 | from | direct | direct:r197 |\n| 199 | r197 | to | direct | direct:r198 |\n| 200 | r198 | from | direct | direct:r198 |\n| 200 | r198 | to | direct | direct:r199 |\n| 201 | r199 | from | direct | direct:r199 |\n| 201 | r199 | to | direct | direct:r200 |\n| 202 | r200 | from | direct | direct:r200 |\n| 202 | r200 | to | direct | direct:r201 |\n| 203 | r201 | from | direct | direct:r201 |\n| 203 | r201 | to | direct | direct:r202 |\n| 204 | r202 | from | direct | direct:r202 |\n| 204 | r202 | to | direct | direct:r203 |\n| 205 | r203 | from | direct | direct:r203 |\n| 205 | r203 | to | direct | direct:r204 |\n| 206 | r204 | from | direct | direct:r204 |\n| 206 | r204 | to | direct | direct:r205 |\n| 207 | r205 | from | direct | direct:r205 |\n| 207 | r205 | to | direct | direct:r206 |\n| 208 | r206 | from | direct | direct:r206 |\n| 208 | r206 | to | direct | direct:r207 |\n| 209 | r207 | from | direct | direct:r207 |\n| 209 | r207 | to | direct | direct:r208 |\n| 210 | r208 | from | direct | direct:r208 |\n| 210 | r208 | to | direct | direct:r209 |\n| 211 | r209 | from | direct | direct:r209 |\n| 211 | r209 | to | direct | direct:r210 |\n| 212 | r210 | from | direct | direct:r210 |\n| 212 | r210 | to | direct | direct:r211 |\n| 213 | r211 | from | direct | direct:r211 |\n| 213 | r211 | to | direct | direct:r212 |\n| 214 | r212 | from | direct | direct:r212 |\n| 214 | r212 | to | direct | direct:r213 |\n| 215 | r213 | from | direct | direct:r213 |\n| 215 | r213 | to | direct | direct:r214 |\n| 216 | r214 | from | direct | direct:r214 |\n| 216 | r214 | to | direct | direct:r215 |\n| 217 | r215 | from | direct | direct:r215 |\n| 217 | r215 | to | direct | direct:r216 |\n| 218 | r216 | from | direct | direct:r216 |\n| 218 | r216 | to | direct | direct:r217 |\n| 219 | r217 | from | direct | direct:r217 |\n| 219 | r217 | to | direct | direct:r218 |\n| 220 | r218 | from | direct | direct:r218 |\n| 220 | r218 | to | direct | direct:r219 |\n| 221 | r219 | from | direct | direct:r219 |\n| 221 | r219 | to | direct | direct:r220 |\n| 222 | r220 | from | direct | direct:r220 |\n| 222 | r220 | to | direct | direct:r221 |\n| 223 | r221 | from | direct | direct:r221 |\n| 223 | r221 | to | direct | direct:r222 |\n| 224 | r222 | from | direct | direct:r222 |\n| 224 | r222 | to | direct | direct:r223 |\n| 225 | r223 | from | direct | direct:r223 |\n| 225 | r223 | to | direct | direct:r224 |\n| 226 | r224 | from | direct | direct:r224 |\n| 226 | r224 | to | direct | direct:r225 |\n| 227 | r225 | from | direct | direct:r225 |\n| 227 | r225 | to | direct | direct:r226 |\n| 228 | r226 | from | direct | direct:r226 |\n| 228 | r226 | to | direct | direct:r227 |\n| 229 | r227 | from | direct | direct:r227 |\n| 229 | r227 | to | direct | direct:r228 |\n| 230 | r228 | from | direct | direct:r228 |\n| 230 | r228 | to | direct | direct:r229 |\n| 231 | r229 | from | direct | direct:r229 |\n| 231 | r229 | to | direct | direct:r230 |\n| 232 | r230 | from | direct | direct:r230 |\n| 232 | r230 | to | direct | direct:r231 |\n| 233 | r231 | from | direct | direct:r231 |\n| 233 | r231 | to | direct | direct:r232 |\n| 234 | r232 | from | direct | direct:r232 |\n| 234 | r232 | to | direct | direct:r233 |\n| 235 | r233 | from | direct | direct:r233 |\n| 235 | r233 | to | direct | direct:r234 |\n| 236 | r234 | from | direct | direct:r234 |\n| 236 | r234 | to | direct | direct:r235 |\n| 237 | r235 | from | direct | direct:r235 |\n| 237 | r235 | to | direct | direct:r236 |\n| 238 | r236 | from | direct | direct:r236 |\n| 238 | r236 | to | direct | direct:r237 |\n| 239 | r237 | from | direct | direct:r237 |\n| 239 | r237 | to | direct | direct:r238 |\n| 240 | r238 | from | direct | direct:r238 |\n| 240 | r238 | to | direct | direct:r239 |\n| 241 | r239 | from | direct | direct:r239 |\n| 241 | r239 | to | direct | direct:r240 |\n| 242 | r240 | from | direct | direct:r240 |\n| 242 | r240 | to | direct | direct:r241 |\n| 243 | r241 | from | direct | direct:r241 |\n| 243 | r241 | to | direct | direct:r242 |\n| 244 | r242 | from | direct | direct:r242 |\n| 244 | r242 | to | direct | direct:r243 |\n| 245 | r243 | from | direct | direct:r243 |\n| 245 | r243 | to | direct | direct:r244 |\n| 246 | r244 | from | direct | direct:r244 |\n| 246 | r244 | to | direct | direct:r245 |\n| 247 | r245 | from | direct | direct:r245 |\n| 247 | r245 | to | direct | direct:r246 |\n| 248 | r246 | from | direct | direct:r246 |\n| 248 | r246 | to | direct | direct:r247 |\n| 249 | r247 | from | direct | direct:r247 |\n| 249 | r247 | to | direct | direct:r248 |\n| 250 | r248 | from | direct | direct:r248 |\n| 250 | r248 | to | direct | direct:r249 |\n| 251 | r249 | from | direct | direct:r249 |\n| 251 | r249 | to | direct | direct:r250 |\n\nShowing the first 500 of 1200 rows."
+  },
+  "reportRouteCheck": {
+   "exact": "# Route Check\n\n1 problem found.\n\n| Line | Route | Problem |\n| ---: | --- | --- |\n| 601 | r599 | to direct:r600: no route in this file consumes from it |"
+  },
+  "reportErrorHandling": {
+   "exact": "# Error Handling\n\nThe file defines no global error handler.\n\n| Line | Route | Own error handling |\n| ---: | --- | --- |\n| 2 | r0 | no |\n| 3 | r1 | no |\n| 4 | r2 | no |\n| 5 | r3 | no |\n| 6 | r4 | no |\n| 7 | r5 | no |\n| 8 | r6 | no |\n| 9 | r7 | no |\n| 10 | r8 | no |\n| 11 | r9 | no |\n| 12 | r10 | no |\n| 13 | r11 | no |\n| 14 | r12 | no |\n| 15 | r13 | no |\n| 16 | r14 | no |\n| 17 | r15 | no |\n| 18 | r16 | no |\n| 19 | r17 | no |\n| 20 | r18 | no |\n| 21 | r19 | no |\n| 22 | r20 | no |\n| 23 | r21 | no |\n| 24 | r22 | no |\n| 25 | r23 | no |\n| 26 | r24 | no |\n| 27 | r25 | no |\n| 28 | r26 | no |\n| 29 | r27 | no |\n| 30 | r28 | no |\n| 31 | r29 | no |\n| 32 | r30 | no |\n| 33 | r31 | no |\n| 34 | r32 | no |\n| 35 | r33 | no |\n| 36 | r34 | no |\n| 37 | r35 | no |\n| 38 | r36 | no |\n| 39 | r37 | no |\n| 40 | r38 | no |\n| 41 | r39 | no |\n| 42 | r40 | no |\n| 43 | r41 | no |\n| 44 | r42 | no |\n| 45 | r43 | no |\n| 46 | r44 | no |\n| 47 | r45 | no |\n| 48 | r46 | no |\n| 49 | r47 | no |\n| 50 | r48 | no |\n| 51 | r49 | no |\n| 52 | r50 | no |\n| 53 | r51 | no |\n| 54 | r52 | no |\n| 55 | r53 | no |\n| 56 | r54 | no |\n| 57 | r55 | no |\n| 58 | r56 | no |\n| 59 | r57 | no |\n| 60 | r58 | no |\n| 61 | r59 | no |\n| 62 | r60 | no |\n| 63 | r61 | no |\n| 64 | r62 | no |\n| 65 | r63 | no |\n| 66 | r64 | no |\n| 67 | r65 | no |\n| 68 | r66 | no |\n| 69 | r67 | no |\n| 70 | r68 | no |\n| 71 | r69 | no |\n| 72 | r70 | no |\n| 73 | r71 | no |\n| 74 | r72 | no |\n| 75 | r73 | no |\n| 76 | r74 | no |\n| 77 | r75 | no |\n| 78 | r76 | no |\n| 79 | r77 | no |\n| 80 | r78 | no |\n| 81 | r79 | no |\n| 82 | r80 | no |\n| 83 | r81 | no |\n| 84 | r82 | no |\n| 85 | r83 | no |\n| 86 | r84 | no |\n| 87 | r85 | no |\n| 88 | r86 | no |\n| 89 | r87 | no |\n| 90 | r88 | no |\n| 91 | r89 | no |\n| 92 | r90 | no |\n| 93 | r91 | no |\n| 94 | r92 | no |\n| 95 | r93 | no |\n| 96 | r94 | no |\n| 97 | r95 | no |\n| 98 | r96 | no |\n| 99 | r97 | no |\n| 100 | r98 | no |\n| 101 | r99 | no |\n| 102 | r100 | no |\n| 103 | r101 | no |\n| 104 | r102 | no |\n| 105 | r103 | no |\n| 106 | r104 | no |\n| 107 | r105 | no |\n| 108 | r106 | no |\n| 109 | r107 | no |\n| 110 | r108 | no |\n| 111 | r109 | no |\n| 112 | r110 | no |\n| 113 | r111 | no |\n| 114 | r112 | no |\n| 115 | r113 | no |\n| 116 | r114 | no |\n| 117 | r115 | no |\n| 118 | r116 | no |\n| 119 | r117 | no |\n| 120 | r118 | no |\n| 121 | r119 | no |\n| 122 | r120 | no |\n| 123 | r121 | no |\n| 124 | r122 | no |\n| 125 | r123 | no |\n| 126 | r124 | no |\n| 127 | r125 | no |\n| 128 | r126 | no |\n| 129 | r127 | no |\n| 130 | r128 | no |\n| 131 | r129 | no |\n| 132 | r130 | no |\n| 133 | r131 | no |\n| 134 | r132 | no |\n| 135 | r133 | no |\n| 136 | r134 | no |\n| 137 | r135 | no |\n| 138 | r136 | no |\n| 139 | r137 | no |\n| 140 | r138 | no |\n| 141 | r139 | no |\n| 142 | r140 | no |\n| 143 | r141 | no |\n| 144 | r142 | no |\n| 145 | r143 | no |\n| 146 | r144 | no |\n| 147 | r145 | no |\n| 148 | r146 | no |\n| 149 | r147 | no |\n| 150 | r148 | no |\n| 151 | r149 | no |\n| 152 | r150 | no |\n| 153 | r151 | no |\n| 154 | r152 | no |\n| 155 | r153 | no |\n| 156 | r154 | no |\n| 157 | r155 | no |\n| 158 | r156 | no |\n| 159 | r157 | no |\n| 160 | r158 | no |\n| 161 | r159 | no |\n| 162 | r160 | no |\n| 163 | r161 | no |\n| 164 | r162 | no |\n| 165 | r163 | no |\n| 166 | r164 | no |\n| 167 | r165 | no |\n| 168 | r166 | no |\n| 169 | r167 | no |\n| 170 | r168 | no |\n| 171 | r169 | no |\n| 172 | r170 | no |\n| 173 | r171 | no |\n| 174 | r172 | no |\n| 175 | r173 | no |\n| 176 | r174 | no |\n| 177 | r175 | no |\n| 178 | r176 | no |\n| 179 | r177 | no |\n| 180 | r178 | no |\n| 181 | r179 | no |\n| 182 | r180 | no |\n| 183 | r181 | no |\n| 184 | r182 | no |\n| 185 | r183 | no |\n| 186 | r184 | no |\n| 187 | r185 | no |\n| 188 | r186 | no |\n| 189 | r187 | no |\n| 190 | r188 | no |\n| 191 | r189 | no |\n| 192 | r190 | no |\n| 193 | r191 | no |\n| 194 | r192 | no |\n| 195 | r193 | no |\n| 196 | r194 | no |\n| 197 | r195 | no |\n| 198 | r196 | no |\n| 199 | r197 | no |\n| 200 | r198 | no |\n| 201 | r199 | no |\n| 202 | r200 | no |\n| 203 | r201 | no |\n| 204 | r202 | no |\n| 205 | r203 | no |\n| 206 | r204 | no |\n| 207 | r205 | no |\n| 208 | r206 | no |\n| 209 | r207 | no |\n| 210 | r208 | no |\n| 211 | r209 | no |\n| 212 | r210 | no |\n| 213 | r211 | no |\n| 214 | r212 | no |\n| 215 | r213 | no |\n| 216 | r214 | no |\n| 217 | r215 | no |\n| 218 | r216 | no |\n| 219 | r217 | no |\n| 220 | r218 | no |\n| 221 | r219 | no |\n| 222 | r220 | no |\n| 223 | r221 | no |\n| 224 | r222 | no |\n| 225 | r223 | no |\n| 226 | r224 | no |\n| 227 | r225 | no |\n| 228 | r226 | no |\n| 229 | r227 | no |\n| 230 | r228 | no |\n| 231 | r229 | no |\n| 232 | r230 | no |\n| 233 | r231 | no |\n| 234 | r232 | no |\n| 235 | r233 | no |\n| 236 | r234 | no |\n| 237 | r235 | no |\n| 238 | r236 | no |\n| 239 | r237 | no |\n| 240 | r238 | no |\n| 241 | r239 | no |\n| 242 | r240 | no |\n| 243 | r241 | no |\n| 244 | r242 | no |\n| 245 | r243 | no |\n| 246 | r244 | no |\n| 247 | r245 | no |\n| 248 | r246 | no |\n| 249 | r247 | no |\n| 250 | r248 | no |\n| 251 | r249 | no |\n| 252 | r250 | no |\n| 253 | r251 | no |\n| 254 | r252 | no |\n| 255 | r253 | no |\n| 256 | r254 | no |\n| 257 | r255 | no |\n| 258 | r256 | no |\n| 259 | r257 | no |\n| 260 | r258 | no |\n| 261 | r259 | no |\n| 262 | r260 | no |\n| 263 | r261 | no |\n| 264 | r262 | no |\n| 265 | r263 | no |\n| 266 | r264 | no |\n| 267 | r265 | no |\n| 268 | r266 | no |\n| 269 | r267 | no |\n| 270 | r268 | no |\n| 271 | r269 | no |\n| 272 | r270 | no |\n| 273 | r271 | no |\n| 274 | r272 | no |\n| 275 | r273 | no |\n| 276 | r274 | no |\n| 277 | r275 | no |\n| 278 | r276 | no |\n| 279 | r277 | no |\n| 280 | r278 | no |\n| 281 | r279 | no |\n| 282 | r280 | no |\n| 283 | r281 | no |\n| 284 | r282 | no |\n| 285 | r283 | no |\n| 286 | r284 | no |\n| 287 | r285 | no |\n| 288 | r286 | no |\n| 289 | r287 | no |\n| 290 | r288 | no |\n| 291 | r289 | no |\n| 292 | r290 | no |\n| 293 | r291 | no |\n| 294 | r292 | no |\n| 295 | r293 | no |\n| 296 | r294 | no |\n| 297 | r295 | no |\n| 298 | r296 | no |\n| 299 | r297 | no |\n| 300 | r298 | no |\n| 301 | r299 | no |\n| 302 | r300 | no |\n| 303 | r301 | no |\n| 304 | r302 | no |\n| 305 | r303 | no |\n| 306 | r304 | no |\n| 307 | r305 | no |\n| 308 | r306 | no |\n| 309 | r307 | no |\n| 310 | r308 | no |\n| 311 | r309 | no |\n| 312 | r310 | no |\n| 313 | r311 | no |\n| 314 | r312 | no |\n| 315 | r313 | no |\n| 316 | r314 | no |\n| 317 | r315 | no |\n| 318 | r316 | no |\n| 319 | r317 | no |\n| 320 | r318 | no |\n| 321 | r319 | no |\n| 322 | r320 | no |\n| 323 | r321 | no |\n| 324 | r322 | no |\n| 325 | r323 | no |\n| 326 | r324 | no |\n| 327 | r325 | no |\n| 328 | r326 | no |\n| 329 | r327 | no |\n| 330 | r328 | no |\n| 331 | r329 | no |\n| 332 | r330 | no |\n| 333 | r331 | no |\n| 334 | r332 | no |\n| 335 | r333 | no |\n| 336 | r334 | no |\n| 337 | r335 | no |\n| 338 | r336 | no |\n| 339 | r337 | no |\n| 340 | r338 | no |\n| 341 | r339 | no |\n| 342 | r340 | no |\n| 343 | r341 | no |\n| 344 | r342 | no |\n| 345 | r343 | no |\n| 346 | r344 | no |\n| 347 | r345 | no |\n| 348 | r346 | no |\n| 349 | r347 | no |\n| 350 | r348 | no |\n| 351 | r349 | no |\n| 352 | r350 | no |\n| 353 | r351 | no |\n| 354 | r352 | no |\n| 355 | r353 | no |\n| 356 | r354 | no |\n| 357 | r355 | no |\n| 358 | r356 | no |\n| 359 | r357 | no |\n| 360 | r358 | no |\n| 361 | r359 | no |\n| 362 | r360 | no |\n| 363 | r361 | no |\n| 364 | r362 | no |\n| 365 | r363 | no |\n| 366 | r364 | no |\n| 367 | r365 | no |\n| 368 | r366 | no |\n| 369 | r367 | no |\n| 370 | r368 | no |\n| 371 | r369 | no |\n| 372 | r370 | no |\n| 373 | r371 | no |\n| 374 | r372 | no |\n| 375 | r373 | no |\n| 376 | r374 | no |\n| 377 | r375 | no |\n| 378 | r376 | no |\n| 379 | r377 | no |\n| 380 | r378 | no |\n| 381 | r379 | no |\n| 382 | r380 | no |\n| 383 | r381 | no |\n| 384 | r382 | no |\n| 385 | r383 | no |\n| 386 | r384 | no |\n| 387 | r385 | no |\n| 388 | r386 | no |\n| 389 | r387 | no |\n| 390 | r388 | no |\n| 391 | r389 | no |\n| 392 | r390 | no |\n| 393 | r391 | no |\n| 394 | r392 | no |\n| 395 | r393 | no |\n| 396 | r394 | no |\n| 397 | r395 | no |\n| 398 | r396 | no |\n| 399 | r397 | no |\n| 400 | r398 | no |\n| 401 | r399 | no |\n| 402 | r400 | no |\n| 403 | r401 | no |\n| 404 | r402 | no |\n| 405 | r403 | no |\n| 406 | r404 | no |\n| 407 | r405 | no |\n| 408 | r406 | no |\n| 409 | r407 | no |\n| 410 | r408 | no |\n| 411 | r409 | no |\n| 412 | r410 | no |\n| 413 | r411 | no |\n| 414 | r412 | no |\n| 415 | r413 | no |\n| 416 | r414 | no |\n| 417 | r415 | no |\n| 418 | r416 | no |\n| 419 | r417 | no |\n| 420 | r418 | no |\n| 421 | r419 | no |\n| 422 | r420 | no |\n| 423 | r421 | no |\n| 424 | r422 | no |\n| 425 | r423 | no |\n| 426 | r424 | no |\n| 427 | r425 | no |\n| 428 | r426 | no |\n| 429 | r427 | no |\n| 430 | r428 | no |\n| 431 | r429 | no |\n| 432 | r430 | no |\n| 433 | r431 | no |\n| 434 | r432 | no |\n| 435 | r433 | no |\n| 436 | r434 | no |\n| 437 | r435 | no |\n| 438 | r436 | no |\n| 439 | r437 | no |\n| 440 | r438 | no |\n| 441 | r439 | no |\n| 442 | r440 | no |\n| 443 | r441 | no |\n| 444 | r442 | no |\n| 445 | r443 | no |\n| 446 | r444 | no |\n| 447 | r445 | no |\n| 448 | r446 | no |\n| 449 | r447 | no |\n| 450 | r448 | no |\n| 451 | r449 | no |\n| 452 | r450 | no |\n| 453 | r451 | no |\n| 454 | r452 | no |\n| 455 | r453 | no |\n| 456 | r454 | no |\n| 457 | r455 | no |\n| 458 | r456 | no |\n| 459 | r457 | no |\n| 460 | r458 | no |\n| 461 | r459 | no |\n| 462 | r460 | no |\n| 463 | r461 | no |\n| 464 | r462 | no |\n| 465 | r463 | no |\n| 466 | r464 | no |\n| 467 | r465 | no |\n| 468 | r466 | no |\n| 469 | r467 | no |\n| 470 | r468 | no |\n| 471 | r469 | no |\n| 472 | r470 | no |\n| 473 | r471 | no |\n| 474 | r472 | no |\n| 475 | r473 | no |\n| 476 | r474 | no |\n| 477 | r475 | no |\n| 478 | r476 | no |\n| 479 | r477 | no |\n| 480 | r478 | no |\n| 481 | r479 | no |\n| 482 | r480 | no |\n| 483 | r481 | no |\n| 484 | r482 | no |\n| 485 | r483 | no |\n| 486 | r484 | no |\n| 487 | r485 | no |\n| 488 | r486 | no |\n| 489 | r487 | no |\n| 490 | r488 | no |\n| 491 | r489 | no |\n| 492 | r490 | no |\n| 493 | r491 | no |\n| 494 | r492 | no |\n| 495 | r493 | no |\n| 496 | r494 | no |\n| 497 | r495 | no |\n| 498 | r496 | no |\n| 499 | r497 | no |\n| 500 | r498 | no |\n| 501 | r499 | no |\n\nShowing the first 500 of 600 rows.\n\n600 routes without any error handling: a failure goes to the default error handler, with no redelivery and no dead letter channel; the exception is logged and returned to the consumer."
+  },
+  "reportSecurity": {
+   "exact": "# Security Review\n\nNo findings."
+  }
+ }
+}

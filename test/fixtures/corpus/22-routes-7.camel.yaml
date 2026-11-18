@@ -1,0 +1,12 @@
+# invented routes
+- route:
+    id: route-0
+    from:
+      uri: "timer:tick?period=5000"
+      steps:
+        - toD:
+            uri: "direct:missing"
+        - wireTap:
+            uri: "direct:missing"
+        - to:
+            uri: "direct:validate"

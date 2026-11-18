@@ -1,0 +1,9 @@
+# invented routes
+- from:
+    uri: "kafka:events?brokers=localhost:9092"
+    steps:
+      - wireTap:
+          uri: "direct:missing"
+      - to: "seda:jobs"
+      - to: "bean:orderService"
+      - to: "kafka:out?brokers=localhost:9092&saslJaasConfig=RAW({{kafka.jaas}})"

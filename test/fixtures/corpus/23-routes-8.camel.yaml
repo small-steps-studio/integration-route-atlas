@@ -1,0 +1,30 @@
+# invented routes
+- route:
+    id: dup
+    from:
+      uri: "file:inbox?move=.done"
+      steps:
+        - toD:
+            uri: "ftp://files.example.test/in?password=plain"
+        - wireTap:
+            uri: "sql:select 1"
+        - wireTap:
+            uri: "seda:jobs"
+        - to: "sql:select 1"
+- route:
+    id: dup
+    from:
+      uri: "jms:queue:orders"
+      steps:
+        - to:
+            uri: "kafka:out?brokers=localhost:9092&saslJaasConfig=RAW({{kafka.jaas}})"
+        - to: "smtp://mail.example.test?username=a&password={{mail.pw}}"
+        - wireTap:
+            uri: "smtp://mail.example.test?username=a&password={{mail.pw}}"
+- route:
+    from:
+      uri: "platform-http:/api/orders"
+      steps:
+        - toD:
+            uri: "seda:jobs"
+        - to: "seda:jobs"

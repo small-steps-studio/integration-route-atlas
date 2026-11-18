@@ -1,0 +1,54 @@
+# invented routes
+- route:
+    from:
+      uri: "kafka:events?brokers=localhost:9092"
+      steps:
+        - to: "ftp://files.example.test/in?password=plain"
+        - to: "https://partner.example.test/api"
+        - to:
+            uri: "direct:validate"
+- route:
+    id: route-1
+    from:
+      uri: "kafka:events?brokers=localhost:9092"
+      steps:
+        - to: "https://partner.example.test/api"
+- route:
+    id: route-2
+    from:
+      uri: "seda:jobs"
+      steps:
+        - toD:
+            uri: "exec:/usr/bin/cleanup"
+        - to:
+            uri: "ftp://files.example.test/in?password=plain"
+- route:
+    id: route-3
+    from:
+      uri: "sftp://ops@files.example.test/out?password={{sftp.pw}}"
+      steps:
+        - to: "sql:select 1"
+        - to:
+            uri: "kafka:out?brokers=localhost:9092&saslJaasConfig=RAW({{kafka.jaas}})"
+        - to: "direct:missing"
+        - to: "bean:orderService"
+        - doTry:
+            steps:
+              - to: "direct:risky"
+- route:
+    id: route-4
+    from:
+      uri: "platform-http:/api/orders"
+      steps:
+        - to:
+            uri: "sql:select 1"
+- route:
+    id: route-5
+    from:
+      uri: "sftp://ops@files.example.test/out?password={{sftp.pw}}"
+      steps:
+        - to: "mock:result"
+        - to: "mock:result"
+        - doTry:
+            steps:
+              - to: "direct:risky"

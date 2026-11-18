@@ -1,0 +1,7 @@
+<routes>
+  <!-- <route id="commented"><from uri="direct:x"/></route> -->
+  <route id="real">
+    <from uri="direct:real"/>
+    <to uri="log:real"/>
+  </route>
+</routes>

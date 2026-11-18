@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes xmlns="http://camel.apache.org/schema/spring">
+  <route id="route-0">
+    <from uri="direct:start"/>
+    <to uri="bean:orderService"/>
+    <to uri="kafka:out?brokers=localhost:9092&amp;saslJaasConfig=RAW({{kafka.jaas}})"/>
+    <to uri="https://partner.example.test/api"/>
+    <to uri="ftp://files.example.test/in?password=plain"/>
+    <doTry>
+      <to uri="direct:risky"/>
+      <doCatch><exception>java.lang.Exception</exception></doCatch>
+    </doTry>
+  </route>
+  <route>
+    <from uri="platform-http:/api/orders"/>
+    <wireTap uri="smtp://mail.example.test?username=a&amp;password={{mail.pw}}"/>
+    <toD uri="seda:jobs"/>
+  </route>
+  <route id="route-2">
+    <from uri="platform-http:/api/orders"/>
+    <to uri="https://partner.example.test/api"/>
+    <wireTap uri="seda:jobs"/>
+    <toD uri="sql:select 1"/>
+    <enrich uri="http://partner.example.test/api?token=abc123"/>
+  </route>
+  <route id="route-3">
+    <from uri="sftp://ops@files.example.test/out?password={{sftp.pw}}"/>
+    <wireTap uri="mock:result"/>
+    <to uri="http://partner.example.test/api?token=abc123"/>
+    <enrich uri="sql:select 1"/>
+  </route>
+</routes>

@@ -1,0 +1,6 @@
+<routes>
+  <route id="e">
+    <from uri="direct:e"/>
+    <to/>
+  </route>
+</routes>

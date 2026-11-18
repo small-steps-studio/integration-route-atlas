@@ -1,0 +1,45 @@
+# invented routes
+- route:
+    from:
+      uri: "timer:tick?period=5000"
+      steps:
+        - to: "direct:missing"
+        - to:
+            uri: "seda:jobs"
+        - to: "mock:result"
+        - doTry:
+            steps:
+              - to: "direct:risky"
+- from:
+    uri: "file:inbox?move=.done"
+    steps:
+      - to:
+          uri: "mock:result"
+      - to: "ftp://files.example.test/in?password=plain"
+      - to: "https://partner.example.test/api"
+      - wireTap:
+          uri: "ftp://files.example.test/in?password=plain"
+- route:
+    id: route-2
+    from:
+      uri: "file:inbox?move=.done"
+      steps:
+        - to: "smtp://mail.example.test?username=a&password={{mail.pw}}"
+        - to: "sql:select 1"
+        - to: "exec:/usr/bin/cleanup"
+- from:
+    uri: "jms:queue:orders"
+    steps:
+      - to:
+          uri: "http://partner.example.test/api?token=abc123"
+- route:
+    id: route-4
+    from:
+      uri: "sftp://ops@files.example.test/out?password={{sftp.pw}}"
+      steps:
+        - to:
+            uri: "kafka:out?brokers=localhost:9092&saslJaasConfig=RAW({{kafka.jaas}})"
+        - to: "direct:validate"
+        - to:
+            uri: "bean:orderService"
+        - to: "direct:validate"

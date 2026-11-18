@@ -1,0 +1,7 @@
+<routes>
+  <route id="multi">
+    <from uri="direct:a"/>
+    <from uri="direct:b"/>
+    <to uri="log:x"/>
+  </route>
+</routes>

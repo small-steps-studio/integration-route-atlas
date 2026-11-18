@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes xmlns="http://camel.apache.org/schema/spring">
+  <route id="dup">
+    <from uri="timer:tick?period=5000"/>
+    <wireTap uri="direct:missing"/>
+    <enrich uri="ftp://files.example.test/in?password=plain"/>
+  </route>
+  <route id="dup">
+    <from uri="platform-http:/api/orders"/>
+    <enrich uri="http://partner.example.test/api?token=abc123"/>
+    <enrich uri="https://partner.example.test/api"/>
+    <toD uri="direct:validate"/>
+  </route>
+</routes>

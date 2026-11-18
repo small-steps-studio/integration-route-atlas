@@ -1,0 +1,6 @@
+<routes>
+  <route id='sq'>
+    <from uri='timer:t'/>
+    <to uri='http://example.test/a?apiKey=XYZ'/>
+  </route>
+</routes>

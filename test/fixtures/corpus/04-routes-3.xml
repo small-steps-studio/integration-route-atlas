@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes xmlns="http://camel.apache.org/schema/spring">
+  <onException>
+    <exception>java.io.IOException</exception>
+  </onException>
+  <route>
+    <from uri="platform-http:/api/orders"/>
+    <toD uri="sql:select 1"/>
+    <toD uri="bean:orderService"/>
+    <to uri="direct:missing"/>
+    <doTry>
+      <to uri="direct:risky"/>
+      <doCatch><exception>java.lang.Exception</exception></doCatch>
+    </doTry>
+  </route>
+</routes>

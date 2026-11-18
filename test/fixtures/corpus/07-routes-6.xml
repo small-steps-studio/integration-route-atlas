@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes xmlns="http://camel.apache.org/schema/spring">
+  <onException>
+    <exception>java.io.IOException</exception>
+  </onException>
+  <route id="route-0">
+    <from uri="sftp://ops@files.example.test/out?password={{sftp.pw}}"/>
+    <to uri="exec:/usr/bin/cleanup"/>
+    <toD uri="mock:result"/>
+    <to uri="https://partner.example.test/api"/>
+  </route>
+  <route>
+    <from uri="seda:jobs"/>
+    <toD uri="exec:/usr/bin/cleanup"/>
+  </route>
+  <route id="route-2">
+    <from uri="jms:queue:orders"/>
+    <to uri="kafka:out?brokers=localhost:9092&amp;saslJaasConfig=RAW({{kafka.jaas}})"/>
+    <enrich uri="http://partner.example.test/api?token=abc123"/>
+    <doTry>
+      <to uri="direct:risky"/>
+      <doCatch><exception>java.lang.Exception</exception></doCatch>
+    </doTry>
+  </route>
+  <route>
+    <from uri="direct:start"/>
+    <wireTap uri="ftp://files.example.test/in?password=plain"/>
+    <toD uri="direct:validate"/>
+  </route>
+  <route>
+    <from uri="platform-http:/api/orders"/>
+    <to uri="mock:result"/>
+    <to uri="kafka:out?brokers=localhost:9092&amp;saslJaasConfig=RAW({{kafka.jaas}})"/>
+    <to uri="direct:missing"/>
+    <to uri="ftp://files.example.test/in?password=plain"/>
+  </route>
+</routes>

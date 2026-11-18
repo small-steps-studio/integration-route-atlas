@@ -1,0 +1,52 @@
+# invented routes
+- route:
+    id: route-0
+    from:
+      uri: "timer:tick?period=5000"
+      steps:
+        - to: "direct:missing"
+        - to: "kafka:out?brokers=localhost:9092&saslJaasConfig=RAW({{kafka.jaas}})"
+        - to:
+            uri: "direct:validate"
+        - to: "exec:/usr/bin/cleanup"
+- route:
+    id: route-1
+    from:
+      uri: "timer:tick?period=5000"
+      steps:
+        - to: "log:info"
+        - to:
+            uri: "http://partner.example.test/api?token=abc123"
+        - to: "seda:jobs"
+- route:
+    id: route-2
+    from:
+      uri: "direct:start"
+      steps:
+        - toD:
+            uri: "mock:result"
+- route:
+    id: route-3
+    from:
+      uri: "seda:jobs"
+      steps:
+        - to: "kafka:out?brokers=localhost:9092&saslJaasConfig=RAW({{kafka.jaas}})"
+        - to: "seda:jobs"
+        - wireTap:
+            uri: "kafka:out?brokers=localhost:9092&saslJaasConfig=RAW({{kafka.jaas}})"
+- route:
+    from:
+      uri: "platform-http:/api/orders"
+      steps:
+        - to:
+            uri: "bean:orderService"
+- route:
+    id: route-5
+    from:
+      uri: "kafka:events?brokers=localhost:9092"
+      steps:
+        - to:
+            uri: "direct:missing"
+        - doTry:
+            steps:
+              - to: "direct:risky"

@@ -1,0 +1,9 @@
+- onException:
+    exception:
+      - java.lang.Exception
+- route:
+    id: covered
+    from:
+      uri: "direct:covered"
+      steps:
+        - to: "log:x"

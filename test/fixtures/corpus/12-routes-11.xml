@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes xmlns="http://camel.apache.org/schema/spring">
+  <route id="route-0">
+    <from uri="platform-http:/api/orders"/>
+    <toD uri="mock:result"/>
+    <to uri="ftp://files.example.test/in?password=plain"/>
+    <to uri="direct:missing"/>
+  </route>
+  <route id="route-1">
+    <from uri="platform-http:/api/orders"/>
+    <wireTap uri="direct:validate"/>
+    <wireTap uri="mock:result"/>
+    <toD uri="direct:validate"/>
+    <to uri="sql:select 1"/>
+    <doTry>
+      <to uri="direct:risky"/>
+      <doCatch><exception>java.lang.Exception</exception></doCatch>
+    </doTry>
+  </route>
+  <route>
+    <from uri="sftp://ops@files.example.test/out?password={{sftp.pw}}"/>
+    <to uri="https://partner.example.test/api"/>
+    <toD uri="http://partner.example.test/api?token=abc123"/>
+  </route>
+</routes>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes xmlns="http://camel.apache.org/schema/spring">
+  <onException>
+    <exception>java.io.IOException</exception>
+  </onException>
+  <route id="route-0">
+    <from uri="seda:jobs"/>
+    <to uri="sql:select 1"/>
+    <to uri="direct:missing"/>
+  </route>
+  <route id="route-1">
+    <from uri="sftp://ops@files.example.test/out?password={{sftp.pw}}"/>
+    <to uri="http://partner.example.test/api?token=abc123"/>
+    <to uri="http://partner.example.test/api?token=abc123"/>
+    <to uri="https://partner.example.test/api"/>
+    <enrich uri="https://partner.example.test/api"/>
+    <doTry>
+      <to uri="direct:risky"/>
+      <doCatch><exception>java.lang.Exception</exception></doCatch>
+    </doTry>
+  </route>
+  <route id="route-2">
+    <from uri="kafka:events?brokers=localhost:9092"/>
+    <toD uri="seda:jobs"/>
+    <enrich uri="ftp://files.example.test/in?password=plain"/>
+    <to uri="direct:missing"/>
+    <doTry>
+      <to uri="direct:risky"/>
+      <doCatch><exception>java.lang.Exception</exception></doCatch>
+    </doTry>
+  </route>
+  <route id="route-3">
+    <from uri="jms:queue:orders"/>
+    <to uri="exec:/usr/bin/cleanup"/>
+    <toD uri="https://partner.example.test/api"/>
+    <toD uri="http://partner.example.test/api?token=abc123"/>
+    <doTry>
+      <to uri="direct:risky"/>
+      <doCatch><exception>java.lang.Exception</exception></doCatch>
+    </doTry>
+  </route>
+  <route id="route-4">
+    <from uri="direct:start"/>
+    <to uri="bean:orderService"/>
+    <doTry>
+      <to uri="direct:risky"/>
+      <doCatch><exception>java.lang.Exception</exception></doCatch>
+    </doTry>
+  </route>
+</routes>

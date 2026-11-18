@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes xmlns="http://camel.apache.org/schema/spring">
+  <route id="dup">
+    <from uri="sftp://ops@files.example.test/out?password={{sftp.pw}}"/>
+    <to uri="sql:select 1"/>
+  </route>
+  <route>
+    <from uri="kafka:events?brokers=localhost:9092"/>
+    <toD uri="ftp://files.example.test/in?password=plain"/>
+  </route>
+  <route id="route-2">
+    <from uri="seda:jobs"/>
+    <toD uri="https://partner.example.test/api"/>
+    <wireTap uri="direct:validate"/>
+    <wireTap uri="log:info"/>
+    <doTry>
+      <to uri="direct:risky"/>
+      <doCatch><exception>java.lang.Exception</exception></doCatch>
+    </doTry>
+  </route>
+</routes>

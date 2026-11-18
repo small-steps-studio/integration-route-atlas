@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes xmlns="http://camel.apache.org/schema/spring">
+  <route id="route-0">
+    <from uri="file:inbox?move=.done"/>
+    <wireTap uri="direct:validate"/>
+    <to uri="log:info"/>
+  </route>
+  <route id="route-1">
+    <from uri="timer:tick?period=5000"/>
+    <to uri="sql:select 1"/>
+    <wireTap uri="mock:result"/>
+    <to uri="http://partner.example.test/api?token=abc123"/>
+    <enrich uri="direct:missing"/>
+    <doTry>
+      <to uri="direct:risky"/>
+      <doCatch><exception>java.lang.Exception</exception></doCatch>
+    </doTry>
+  </route>
+  <route id="route-2">
+    <from uri="timer:tick?period=5000"/>
+    <enrich uri="log:info"/>
+    <to uri="bean:orderService"/>
+    <to uri="sql:select 1"/>
+  </route>
+</routes>

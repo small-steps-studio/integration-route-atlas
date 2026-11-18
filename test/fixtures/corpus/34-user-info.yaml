@@ -1,0 +1,6 @@
+- route:
+    id: creds
+    from:
+      uri: "ftp://admin:secret@files.example.test/in"
+      steps:
+        - to: "log:x"

@@ -1,0 +1,17 @@
+# invented routes
+- route:
+    id: dup
+    from:
+      uri: "seda:jobs"
+      steps:
+        - to: "ftp://files.example.test/in?password=plain"
+        - to: "ftp://files.example.test/in?password=plain"
+        - wireTap:
+            uri: "direct:missing"
+- from:
+    uri: "timer:tick?period=5000"
+    steps:
+      - to:
+          uri: "log:info"
+      - wireTap:
+          uri: "seda:jobs"

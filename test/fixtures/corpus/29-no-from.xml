@@ -1,0 +1,9 @@
+<routes>
+  <route id="route-1">
+    <to uri="exec:/usr/bin/cleanup"/>
+    <doTry>
+      <to uri="direct:risky"/>
+      <doCatch><exception>java.lang.Exception</exception></doCatch>
+    </doTry>
+  </route>
+</routes>

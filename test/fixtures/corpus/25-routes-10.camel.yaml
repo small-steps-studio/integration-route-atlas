@@ -1,0 +1,22 @@
+# invented routes
+- route:
+    id: route-0
+    from:
+      uri: "direct:start"
+      steps:
+        - wireTap:
+            uri: "http://partner.example.test/api?token=abc123"
+        - to: "https://partner.example.test/api"
+- route:
+    id: route-1
+    from:
+      uri: "kafka:events?brokers=localhost:9092"
+      steps:
+        - to: "mock:result"
+        - to: "smtp://mail.example.test?username=a&password={{mail.pw}}"
+- from:
+    uri: "sftp://ops@files.example.test/out?password={{sftp.pw}}"
+    steps:
+      - to: "http://partner.example.test/api?token=abc123"
+      - wireTap:
+          uri: "http://partner.example.test/api?token=abc123"

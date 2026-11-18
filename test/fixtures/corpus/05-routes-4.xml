@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes xmlns="http://camel.apache.org/schema/spring">
+  <route id="route-0">
+    <from uri="direct:start"/>
+    <wireTap uri="bean:orderService"/>
+    <wireTap uri="kafka:out?brokers=localhost:9092&amp;saslJaasConfig=RAW({{kafka.jaas}})"/>
+    <to uri="kafka:out?brokers=localhost:9092&amp;saslJaasConfig=RAW({{kafka.jaas}})"/>
+  </route>
+  <route id="route-1">
+    <from uri="sftp://ops@files.example.test/out?password={{sftp.pw}}"/>
+    <enrich uri="smtp://mail.example.test?username=a&amp;password={{mail.pw}}"/>
+    <wireTap uri="bean:orderService"/>
+    <toD uri="http://partner.example.test/api?token=abc123"/>
+    <to uri="http://partner.example.test/api?token=abc123"/>
+  </route>
+</routes>

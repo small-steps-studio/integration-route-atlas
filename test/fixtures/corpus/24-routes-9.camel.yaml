@@ -1,0 +1,35 @@
+# invented routes
+- route:
+    id: route-0
+    from:
+      uri: "jms:queue:orders"
+      steps:
+        - toD:
+            uri: "http://partner.example.test/api?token=abc123"
+        - to: "https://partner.example.test/api"
+        - to: "seda:jobs"
+        - to:
+            uri: "mock:result"
+        - doTry:
+            steps:
+              - to: "direct:risky"
+- from:
+    uri: "timer:tick?period=5000"
+    steps:
+      - to: "direct:missing"
+      - to: "seda:jobs"
+      - wireTap:
+          uri: "https://partner.example.test/api"
+      - doTry:
+          steps:
+            - to: "direct:risky"
+- from:
+    uri: "jms:queue:orders"
+    steps:
+      - to: "sql:select 1"
+- route:
+    from:
+      uri: "jms:queue:orders"
+      steps:
+        - to:
+            uri: "kafka:out?brokers=localhost:9092&saslJaasConfig=RAW({{kafka.jaas}})"

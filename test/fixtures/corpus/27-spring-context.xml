@@ -1,0 +1,12 @@
+<beans xmlns="http://www.springframework.org/schema/beans">
+  <camelContext xmlns="http://camel.apache.org/schema/spring">
+    <errorHandler id="dlc" type="DeadLetterChannel" deadLetterUri="jms:queue:dead"/>
+    <route id="route-1">
+      <from uri="kafka:events?brokers=localhost:9092"/>
+      <to uri="smtp://mail.example.test?username=a&amp;password={{mail.pw}}"/>
+      <to uri="mock:result"/>
+      <toD uri="https://partner.example.test/api"/>
+      <enrich uri="log:info"/>
+    </route>
+  </camelContext>
+</beans>

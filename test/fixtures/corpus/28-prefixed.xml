@@ -1,0 +1,6 @@
+<camel:routes xmlns:camel="http://camel.apache.org/schema/spring">
+  <camel:route id="p1">
+    <camel:from uri="direct:a"/>
+    <camel:to uri="direct:b"/>
+  </camel:route>
+</camel:routes>
